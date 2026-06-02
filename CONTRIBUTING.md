@@ -1,0 +1,27 @@
+# Contributing
+
+Thanks for helping improve the Interaction Intelligence Audit skill. This project is a Markdown-only framework, so most contributions are edits to the checklist, examples, or templates.
+
+## Ways to contribute
+
+### Propose checklist improvements
+The audit framework lives in [CHECKLIST.md](CHECKLIST.md), organized as 21 categories (`01`–`21`). To refine a check, phrase it as something to **look for and verify** (a failure mode), not just a noun. Keep checks generic enough to apply across product types.
+
+### Improve example findings
+Worked examples live in [EXAMPLES.md](EXAMPLES.md). Good findings are specific, name a concrete state/flow/component/screen, and follow the `Issue / Severity / Impact / Recommendation` shape. Examples are illustrative and fabricated — do not describe a real product.
+
+### Report a missing UX audit dimension
+If the framework is missing a category or check, open an issue describing the gap: what failure mode is uncovered, which product types it affects, and a proposed check or category.
+
+## Submitting a pull request
+
+1. Fork the repository and create a branch.
+2. Make your change, keeping the existing tone and structure.
+3. Verify cross-file references (e.g. `Checklist 04 Page States`) stay consistent.
+4. Open a pull request with a clear description of what changed and why.
+
+## Guidelines
+
+- **Keep it generic.** This framework is meant to work across web apps, SaaS, AI products, workflow builders, dashboards, and mobile. Avoid tying checks or examples to one specific product or company.
+- **No private or sensitive content.** Do not add proprietary, internal, confidential, or personally identifying information, secrets, tokens, or private paths.
+- **Audit, not redesign.** The skill diagnoses and recommends; it is not a visual-style critique or a redesign tool. Keep contributions aligned with that scope.
