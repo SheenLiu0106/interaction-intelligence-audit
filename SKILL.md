@@ -1,14 +1,56 @@
 ---
 name: interaction-intelligence-audit
 description: Audit digital products for interaction-design gaps, missing states, broken user flows, AI-experience risks, accessibility issues, and release-readiness blockers.
-version: 0.1.0
+version: 0.2.0
 ---
+
+> **The YAML frontmatter above is optional metadata.** Claude Code and the Claude Agent SDK use
+> `name`/`description`/`version` for auto-discovery; other agents simply read this file as plain
+> Markdown instructions and ignore it. **No part of this skill depends on it** — or on any
+> vendor-specific tool, memory system, planning mode, or proprietary feature.
 
 # Interaction Intelligence Audit
 
 A diagnostic skill that performs a comprehensive **UX, interaction-design, product-readiness, and release audit** of a web application, SaaS product, AI product, workflow builder, or dashboard. It systematically hunts for UX gaps, missing states, broken mental models, interaction inconsistencies, edge cases, accessibility issues, error-handling weaknesses, product-logic flaws, missing analytics, performance risks, and release blockers — then returns a severity-ordered, actionable report.
 
 This is an **audit, not a redesign**, and it is explicitly **not a visual-style critique**. It evaluates whether users can succeed, whether the product logic holds up under stress, and whether the product is ready to ship.
+
+---
+
+## Agent compatibility
+
+This skill is **coding-agent agnostic**. It runs on any repository-capable coding agent —
+**Claude Code, OpenAI Codex, Cursor, Windsurf, Gemini CLI, the GitHub Copilot coding agent**, and
+equivalent future tools — because it relies only on generic repository operations (inspect/search
+files, read docs, edit source, create/update Markdown, run available validation, inspect diffs).
+If a capability is unavailable, use the closest equivalent, document the limitation, and mark
+unverifiable checks **`Manual Verification Required`**. See [`README.md`](README.md) for per-agent
+setup.
+
+## Two modes
+
+- **Mode A — One-shot Audit.** Walk the framework and return a single severity-ordered report.
+  Nothing is written to the target unless asked. Format: [`OUTPUT_TEMPLATE.md`](OUTPUT_TEMPLATE.md).
+  This is the default, and the rest of this file describes it.
+- **Mode B — Persistent Remediation.** Audit *and* fix issues **one at a time, under human
+  review**, keeping an append-only history (`bug.md` / `changelog.md` / decision log) **inside the
+  target repository**. Fix one → stop → await explicit human review → continue. Full lifecycle:
+  [`WORKFLOW.md`](WORKFLOW.md). Reusable scaffolds: [`templates/`](templates/).
+
+**Audit-records location:** in Mode B, all runtime records are created **inside the target product
+repository being audited — never inside this skill repository.**
+
+**Target-repository confirmation (mandatory, Mode B).** Before creating or updating *any* runtime
+audit file, the agent must identify and confirm:
+
+1. the **reusable skill repository** path (where this `SKILL.md` lives),
+2. the **target product repository** path, and
+3. that **the two paths are not the same directory**.
+
+If the target product repository has not been explicitly provided or cannot be confidently
+identified, the agent must **stop and ask the user for the target repository path**. The agent
+must **never assume the reusable skill repository itself is the target product repository.** The
+full preflight is specified in [`WORKFLOW.md`](WORKFLOW.md).
 
 ---
 
@@ -80,8 +122,10 @@ Produce the report exactly in the format defined by [OUTPUT_TEMPLATE.md](OUTPUT_
 
 ## Files
 
-- [README.md](README.md) — purpose, when (not) to use, inputs/outputs, example invocations
+- [README.md](README.md) — purpose, when (not) to use, inputs/outputs, per-agent setup, example invocations
 - [CHECKLIST.md](CHECKLIST.md) — the 21-category audit framework (actionable checks)
-- [OUTPUT_TEMPLATE.md](OUTPUT_TEMPLATE.md) — the mandatory report format + severity rubric
+- [OUTPUT_TEMPLATE.md](OUTPUT_TEMPLATE.md) — the mandatory Mode A report format + severity rubric
 - [EXAMPLES.md](EXAMPLES.md) — worked example findings for five product types
-- [PROMPT.md](PROMPT.md) — the default invocation prompt and audit personas
+- [PROMPT.md](PROMPT.md) — the default invocation prompts (Mode A and Mode B) and audit personas
+- [WORKFLOW.md](WORKFLOW.md) — Mode B persistent-remediation lifecycle (statuses, one-fix-at-a-time, human-review gate)
+- [templates/](templates/) — reusable scaffolds (`bug.md`, `changelog.md`, `audit/`) copied into the target repo for Mode B

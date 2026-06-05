@@ -1,6 +1,11 @@
 # Interaction Intelligence Audit — Default Invocation Prompt
 
-Use this prompt to run the audit. Adapt the bracketed inputs; keep the personas and priorities intact.
+Use this prompt to run the audit with **any repository-capable coding agent** (Claude Code, OpenAI Codex, Cursor, Windsurf, Gemini CLI, GitHub Copilot coding agent, or equivalent). It depends on no vendor-specific feature. Adapt the bracketed inputs; keep the personas and priorities intact.
+
+There are two modes — pick one at the bottom of this file:
+
+- **Mode A — One-shot Audit:** report only, in [OUTPUT_TEMPLATE.md](OUTPUT_TEMPLATE.md) format.
+- **Mode B — Persistent Remediation:** audit *and* fix one issue at a time under human review, per [WORKFLOW.md](WORKFLOW.md).
 
 ---
 
@@ -56,4 +61,36 @@ Known constraints / out of scope: [anything already accepted or excluded]
 Think like a Staff Product Designer + QA Lead + Product Manager — not a visual designer.
 Focus on user success, product logic, interaction quality, failure recovery, and product readiness.
 Walk CHECKLIST.md sections 01–21, prioritize the highest-risk issues first, and return the report in OUTPUT_TEMPLATE.md format.
+```
+
+---
+
+## Mode B — Persistent Remediation (audit and fix under review)
+
+Use this when you want the agent to fix issues incrementally, not just report them. It follows the full lifecycle in [WORKFLOW.md](WORKFLOW.md): records are written **into the target repository**, fixes happen **one at a time**, and the agent **stops for explicit human review** before closing an issue or starting the next.
+
+```
+Run the Interaction Intelligence Audit in Persistent Remediation mode (follow WORKFLOW.md).
+
+Target product repository: [absolute path to the repo to audit — REQUIRED]
+Target: [what it is and what it's for]
+Scope: [whole product | specific flow/page/component]
+Validation available: [tests | typecheck | lint | build | runtime | none — describe]
+Records location: [target repo root | target docs/audit/ — default: target repo root]
+
+0. PREFLIGHT (do this before writing anything): resolve the skill repo path and the target
+   product repo path, and confirm they are NOT the same directory. If the target repository
+   was not given or you cannot confidently identify it, STOP and ask me for the target path —
+   never assume the skill repo is the target.
+1. Inspect the repo and read any existing bug.md / changelog.md / decision log first;
+   preserve and update existing records rather than overwriting them.
+2. Only if a given file is absent, scaffold it in the TARGET repo by copying from the skill's
+   templates/ (copy blank templates only when the corresponding target file does not exist).
+3. Walk CHECKLIST.md, record every finding in bug.md (severity-ranked), and produce an audit summary.
+4. Fix ONLY the single highest-priority issue. Make the smallest effective change; no unrelated edits.
+5. Verify with the strongest available validation; mark unrunnable checks "Manual Verification Required".
+6. Update bug.md (append-only history) and changelog.md; add a decision entry if a real design choice was made.
+7. Set the issue to "Fixed — Awaiting Human Review", request review, and STOP.
+
+Do not fix a second issue until I respond with: Approve / Reject / Revise / Defer.
 ```

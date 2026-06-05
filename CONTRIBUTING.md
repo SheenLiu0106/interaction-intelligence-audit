@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for helping improve the Interaction Intelligence Audit skill. This project is a Markdown-only framework, so most contributions are edits to the checklist, examples, or templates.
+Thanks for helping improve the Interaction Intelligence Audit skill. This project is a **coding-agent-agnostic, Markdown-only framework**, so most contributions are edits to the checklist, examples, templates, or the remediation workflow.
 
 ## Ways to contribute
 
@@ -13,6 +13,9 @@ Worked examples live in [EXAMPLES.md](EXAMPLES.md). Good findings are specific, 
 ### Report a missing UX audit dimension
 If the framework is missing a category or check, open an issue describing the gap: what failure mode is uncovered, which product types it affects, and a proposed check or category.
 
+### Improve the remediation workflow or templates
+The Mode B lifecycle lives in [WORKFLOW.md](WORKFLOW.md) and the reusable scaffolds in [templates/](templates/). Keep both **agent-agnostic** — generic repository operations only, no vendor-specific tool, command, or feature. Template files ship blank (placeholders only); never commit a filled-in runtime `bug.md`/`changelog.md` into this repo.
+
 ## Submitting a pull request
 
 1. Fork the repository and create a branch.
@@ -23,5 +26,6 @@ If the framework is missing a category or check, open an issue describing the ga
 ## Guidelines
 
 - **Keep it generic.** This framework is meant to work across web apps, SaaS, AI products, workflow builders, dashboards, and mobile. Avoid tying checks or examples to one specific product or company.
+- **Stay agent-agnostic.** The skill must run on any repository-capable coding agent. Don't introduce a dependency on a vendor-specific tool, slash command, memory system, or planning mode.
 - **No private or sensitive content.** Do not add proprietary, internal, confidential, or personally identifying information, secrets, tokens, or private paths.
 - **Audit, not redesign.** The skill diagnoses and recommends; it is not a visual-style critique or a redesign tool. Keep contributions aligned with that scope.

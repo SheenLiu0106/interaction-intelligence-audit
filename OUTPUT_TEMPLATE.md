@@ -78,15 +78,22 @@ Scores are honest, not generous. Mark a category `N/A` if it could not be assess
 
 # Category Scores
 
-Score each `/10` (or `N/A`), with a one-line rationale. These map to the framework in [CHECKLIST.md](CHECKLIST.md).
+A summary **rollup of the 21-category framework** in [CHECKLIST.md](CHECKLIST.md): each score aggregates the framework section(s) named in parentheses, so every section `01`–`21` is covered. Score each `/10` with a one-line rationale; mark a bucket `N/A` (rather than guessing) if its sections could not be assessed.
 
-- **Information Architecture:** X/10 — <rationale>
-- **Interaction Design:** X/10 — <rationale>
-- **Accessibility:** X/10 — <rationale>
-- **Error Handling:** X/10 — <rationale>
-- **Performance:** X/10 — <rationale>
-- **AI Experience:** X/10 — <rationale; `N/A` if not an AI product>
-- **Release Readiness:** X/10 — <rationale>
+- **Preconditions & Entry States** (01): X/10 — <rationale>
+- **User Flows & Continuity** (02): X/10 — <rationale>
+- **Information Architecture** (03): X/10 — <rationale>
+- **Page & Data States** (04, 05): X/10 — <rationale>
+- **Interaction & Feedback** (06, 07, 09, 10): X/10 — <rationale>
+- **Destructive Actions & Error Handling** (08, 11): X/10 — <rationale>
+- **Accessibility** (13): X/10 — <rationale>
+- **Responsive & Internationalization** (14, 15): X/10 — <rationale>
+- **Permissions, Security & Privacy** (12, 19): X/10 — <rationale>
+- **Analytics** (16): X/10 — <rationale>
+- **Performance** (17): X/10 — <rationale>
+- **Versioning** (18): X/10 — <rationale>
+- **AI Experience** (21): X/10 — <rationale; `N/A` if not an AI product>
+- **Release Readiness** (20): X/10 — <rationale>
 
 ---
 

@@ -1,10 +1,8 @@
-# Interaction Intelligence Audit for Claude Code
+# Interaction Intelligence Audit
 
-A reusable Claude Code skill for systematic interaction-design, AI-experience, and product-readiness audits.
+A reusable, **coding-agent-agnostic** skill that performs a comprehensive **interaction-design, product-readiness, and release audit** of web apps, SaaS products, AI products, workflow builders, dashboards, and mobile products — then returns a severity-ordered, evidence-based report you can take straight into sprint planning.
 
-**Interaction Intelligence Audit** is a [Claude Code](https://claude.com/claude-code) skill that performs a comprehensive **interaction-design, product-readiness, and release audit** of web apps, SaaS products, AI products, workflow builders, dashboards, and mobile products.
-
-It systematically hunts for the things that make users fail, the product logic break, or the release slip — then returns a severity-ordered, evidence-based report you can take straight into sprint planning.
+It runs on any repository-capable coding agent — [Claude Code](https://claude.com/claude-code), OpenAI Codex, Cursor, Windsurf, Gemini CLI, the GitHub Copilot coding agent, and equivalent tools — because it relies only on generic repository operations and a set of Markdown instructions. It systematically hunts for the things that make users fail, the product logic break, or the release slip.
 
 > This is **not** a visual-style critique tool. It does not score color, typography, or brand taste. Its subject is interaction quality, product logic, missing states, edge cases, failure recovery, accessibility, analytics, performance, and release readiness.
 
@@ -40,57 +38,81 @@ See [CHECKLIST.md](CHECKLIST.md) for the full, actionable framework.
 
 ---
 
-## Installation
+## Two modes
 
-Install the skill globally by cloning it into your Claude Code skills directory:
+- **Mode A — One-shot Audit** *(default)*: walk the framework and return a single severity-ordered report ([OUTPUT_TEMPLATE.md](OUTPUT_TEMPLATE.md)). Nothing is written to the target unless you ask.
+- **Mode B — Persistent Remediation**: audit *and* fix issues **one at a time, under human review**, keeping an append-only history (`bug.md` / `changelog.md` / decision log) **inside the target repository**. Fix one → stop → await explicit human review → continue. See [WORKFLOW.md](WORKFLOW.md); scaffolds live in [templates/](templates/).
+
+In Mode B, **all runtime records are created inside the product repository being audited — never inside this skill repository.**
+
+---
+
+## Setup
+
+The skill is just Markdown + generic repository operations, so any repository-capable agent can run it. Clone it once:
 
 ```bash
-git clone https://github.com/SheenLiu0106/interaction-intelligence-audit.git \
-  ~/.claude/skills/interaction-intelligence-audit
+git clone https://github.com/SheenLiu0106/interaction-intelligence-audit.git
 ```
 
-If the `~/.claude/skills/` directory did not previously exist, **restart Claude Code** after this first install so it picks up the new skill. On subsequent updates a restart is not required.
+### Universal fallback (works with any agent)
 
-To update later:
+Regardless of agent, you can always run the skill by either:
 
-```bash
-cd ~/.claude/skills/interaction-intelligence-audit
-git pull
-```
+- **providing the agent with [`PROMPT.md`](PROMPT.md)** (paste it, or point the agent at the file), or
+- **instructing the agent to read [`SKILL.md`](SKILL.md), [`WORKFLOW.md`](WORKFLOW.md) (for Mode B), and the relevant files in [`templates/`](templates/) directly.**
+
+This path depends on no vendor-specific feature and is the recommended default if anything below doesn't apply to your setup.
+
+### Example integration paths (illustrative, not guaranteed)
+
+> These are **recommended setup patterns**, not contracts. **Agent-specific configuration may vary by version and environment** — treat the file names and mechanisms below as examples and confirm them against your agent's current docs. When in doubt, use the universal fallback above.
+
+| Agent | Example integration path |
+|---|---|
+| **Claude Code** | Cloning into a skills directory (e.g. `~/.claude/skills/…`) typically enables slash-style invocation; a restart may be needed after the first install. |
+| **OpenAI Codex** | Often references `SKILL.md` / `WORKFLOW.md` from an `AGENTS.md`-style context file. |
+| **Cursor / Windsurf** | Commonly add the folder to the workspace and reference the files from a project rule. |
+| **Gemini CLI** | Usually references the files from a context file (e.g. a `GEMINI.md`-style file). |
+| **GitHub Copilot coding agent** | Often references the files from a repo-level instructions file (e.g. under `.github/`). |
+| **Any other repo-capable agent** | Give it read access to this folder and use the universal fallback. |
+
+The frontmatter in `SKILL.md` is optional metadata used only by some agents (e.g. Claude Code / the Agent SDK) for auto-discovery; other agents read `SKILL.md` as plain instructions.
 
 ---
 
 ## Usage
 
-Invoke the skill with `/interaction-intelligence-audit` and describe what to audit:
+Describe what to audit and which mode you want. The skill works from a described surface, a URL, screenshots/design frames, or a step-by-step flow.
+
+**Mode A — report only:**
 
 ```text
-/interaction-intelligence-audit
-
-Audit the current project.
-Start with the primary user journey.
-Do not modify code yet.
-Produce an evidence-based report ranked by severity.
+Run the Interaction Intelligence Audit (SKILL.md / PROMPT.md) on this project.
+Start with the primary user journey. Do not modify code.
+Produce an evidence-based report ranked by severity, per OUTPUT_TEMPLATE.md.
 ```
 
-You can also scope it narrowly to a single flow:
+Scope it narrowly, or focus on AI-native behavior:
 
 ```text
-/interaction-intelligence-audit
-
-Audit the onboarding flow for first-time users.
+Audit the onboarding flow for first-time users. Report only.
 ```
-
-Or focus it on AI-native behavior:
 
 ```text
-/interaction-intelligence-audit
-
-Audit the AI workflow builder.
-Focus on agent handoffs, failure recovery, human override, and auditability.
+Audit the AI workflow builder. Focus on agent handoffs, failure recovery,
+human override, and auditability (CHECKLIST.md section 21). Report only.
 ```
 
-The skill works from a described surface, a URL, screenshots/design frames, or a step-by-step flow. See [PROMPT.md](PROMPT.md) for the full fill-in template and audit personas.
+**Mode B — audit and fix under review:**
+
+```text
+Run the Interaction Intelligence Audit in Persistent Remediation mode (WORKFLOW.md).
+Scaffold bug.md / changelog.md in THIS repo from templates/, record findings,
+then fix only the highest-priority issue, stop, and wait for my review.
+```
+
+See [PROMPT.md](PROMPT.md) for the full fill-in templates and audit personas.
 
 ---
 
