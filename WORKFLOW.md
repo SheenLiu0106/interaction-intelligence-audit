@@ -1,14 +1,32 @@
-# Persistent Remediation Workflow (Mode B)
+# Persistent Remediation & Regression Re-Audit Workflow (Mode B / Mode C)
 
-This is the **incremental audit-and-fix workflow** for the Interaction Intelligence Audit
-skill. Use it when you want the agent not just to *report* issues (that is Mode A — see
-[`OUTPUT_TEMPLATE.md`](OUTPUT_TEMPLATE.md)) but to **fix them one at a time, under human
-review**, while keeping a complete, auditable history in the target repository.
+This is the **incremental audit-and-fix workflow** (Mode B) and the **regression re-audit
+workflow** (Mode C) for the Interaction Intelligence Audit skill. Use Mode B when you want the
+agent not just to *report* issues (that is Mode A — see [`OUTPUT_TEMPLATE.md`](OUTPUT_TEMPLATE.md))
+but to **fix them one at a time, under human review**, while keeping a complete, auditable
+history in the target repository. Use **Mode C** when records already exist and you want to know
+whether previously closed issues or approved decisions have regressed (see
+[Mode C — Regression Re-Audit](#mode-c--regression-re-audit) below).
 
 It is **coding-agent agnostic**: it assumes only generic repository operations and works with
 Claude Code, OpenAI Codex, Cursor, Windsurf, Gemini CLI, the GitHub Copilot coding agent, and
 any equivalent repository-capable agent. It must **not** depend on any vendor-specific tool,
 memory system, planning mode, or proprietary feature.
+
+---
+
+## Logic-first classification rule (applies to every mode)
+
+Before logging a visual observation, determine whether it creates a functional, accessibility,
+comprehension, or workflow-safety impact.
+
+```text
+If no material impact exists, do not log it as a bug.
+```
+
+When such an impact *does* exist, log the **impact** (the behavioral, accessibility,
+comprehension, data-integrity, or workflow-safety problem) — not the aesthetic. This skill audits
+how a product behaves, not how it looks.
 
 ---
 
@@ -139,6 +157,51 @@ Never claim a validation step passed unless it was actually performed.
 - **Revise BUG-NNN: [feedback]** → set `Needs Revision`, apply **only** the requested change,
   re-validate, return to `Fixed — Awaiting Human Review`, request review again, stop.
 - **Defer BUG-NNN** → set `Deferred`, record the reason, keep it in the backlog, stop.
+
+---
+
+## Mode C — Regression Re-Audit
+
+Mode C compares **current product behavior against historical records** to detect regressions.
+It is **not** a fresh full audit — it re-checks only what history says was already addressed,
+unless you explicitly ask for broader coverage. It reuses everything above: the mandatory
+[Preflight](#preflight-mandatory-before-scaffolding-or-writing-any-record), generic-operations
+rule, status lifecycle, append-only history, and the human-review gate. Its checks come from
+[`CHECKLIST.md`](CHECKLIST.md) section `23` (Regression & Release Readiness Re-Audit).
+
+### The Mode C procedure
+
+0. **Preflight (mandatory).** Resolve the skill and target repository paths, confirm they differ,
+   and stop to ask the user if the target is unknown — exactly as in Mode B.
+1. **Read existing `bug.md`** in the target repo.
+2. **Read existing `changelog.md`** in the target repo.
+3. **Read existing interaction decisions** (e.g. `docs/audit/interaction-decisions.md`).
+4. **Identify previously closed issues** (`Closed` / `Approved`) and the approved interaction
+   decisions.
+5. **Re-check the affected workflows** — the flows, states, and components those issues and
+   decisions touched. Do **not** broadly re-audit unless the user asks.
+6. **Report**, in a Regression Report, each of:
+   - **reopened issues** — previously closed/approved issues that now reproduce,
+   - **newly discovered regressions** — new breakage in a re-checked workflow,
+   - **still-open issues** — previously recorded issues that remain open,
+   - **verified closed issues** — confirmed still fixed,
+   - **approved decisions that are no longer respected.**
+7. **Avoid broad re-auditing** unless explicitly requested.
+8. **Preserve historical records** — append only; never rewrite or delete a closed entry.
+9. **Log regressions as new `bug.md` entries** that reference the original bug ID. Use the
+   classification:
+
+   ```text
+   Type: Regression
+   Related Bug: BUG-XXX
+   ```
+
+10. **Stop after generating the regression report** unless explicitly asked to enter Mode B and
+    fix an issue.
+
+If the user then says to fix a regression, switch to **Mode B** and run the standard one-fix
+loop on that new `Type: Regression` entry (set `In Progress` → smallest effective fix → validate
+→ `Fixed — Awaiting Human Review` → stop for review).
 
 ---
 

@@ -5,7 +5,7 @@ Thanks for helping improve the Interaction Intelligence Audit skill. This projec
 ## Ways to contribute
 
 ### Propose checklist improvements
-The audit framework lives in [CHECKLIST.md](CHECKLIST.md), organized as 21 categories (`01`–`21`). To refine a check, phrase it as something to **look for and verify** (a failure mode), not just a noun. Keep checks generic enough to apply across product types.
+The audit framework lives in [CHECKLIST.md](CHECKLIST.md): a **logic-first** structure with Tier 1 (seven primary interaction-logic domains over sections `01`–`23`) and Tier 2 (conditional/secondary sections gated by material impact). To refine a check, phrase it as something to **look for and verify** (a behavioral failure mode), not just a noun. Keep checks generic enough to apply across product types, and keep visual concerns conditional — only relevant when they affect functionality, accessibility, comprehension, data integrity, or workflow safety.
 
 ### Improve example findings
 Worked examples live in [EXAMPLES.md](EXAMPLES.md). Good findings are specific, name a concrete state/flow/component/screen, and follow the `Issue / Severity / Impact / Recommendation` shape. Examples are illustrative and fabricated — do not describe a real product.
@@ -14,7 +14,7 @@ Worked examples live in [EXAMPLES.md](EXAMPLES.md). Good findings are specific, 
 If the framework is missing a category or check, open an issue describing the gap: what failure mode is uncovered, which product types it affects, and a proposed check or category.
 
 ### Improve the remediation workflow or templates
-The Mode B lifecycle lives in [WORKFLOW.md](WORKFLOW.md) and the reusable scaffolds in [templates/](templates/). Keep both **agent-agnostic** — generic repository operations only, no vendor-specific tool, command, or feature. Template files ship blank (placeholders only); never commit a filled-in runtime `bug.md`/`changelog.md` into this repo.
+The Mode B (persistent remediation) and Mode C (regression re-audit) lifecycles live in [WORKFLOW.md](WORKFLOW.md) and the reusable scaffolds in [templates/](templates/). Keep both **agent-agnostic** — generic repository operations only, no vendor-specific tool, command, or feature. Template files ship blank (placeholders only); never commit a filled-in runtime `bug.md`/`changelog.md` into this repo.
 
 ## Submitting a pull request
 
@@ -25,6 +25,7 @@ The Mode B lifecycle lives in [WORKFLOW.md](WORKFLOW.md) and the reusable scaffo
 
 ## Guidelines
 
+- **Keep the scope logic-first.** Contributions should strengthen interaction logic auditing, workflow integrity, state handling, action safety, AI-native behavior, or remediation traceability. Avoid expanding the project into a general-purpose visual-design review framework.
 - **Keep it generic.** This framework is meant to work across web apps, SaaS, AI products, workflow builders, dashboards, and mobile. Avoid tying checks or examples to one specific product or company.
 - **Stay agent-agnostic.** The skill must run on any repository-capable coding agent. Don't introduce a dependency on a vendor-specific tool, slash command, memory system, or planning mode.
 - **No private or sensitive content.** Do not add proprietary, internal, confidential, or personally identifying information, secrets, tokens, or private paths.

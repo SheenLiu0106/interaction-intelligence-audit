@@ -1,6 +1,64 @@
 # Interaction Intelligence Audit — Examples
 
-Worked example findings for five common product types. These are **illustrative**, fabricated to calibrate the *style, specificity, and severity* of findings — they do not describe any real product. Notice that every finding names a concrete state/flow/component and follows the `Issue / Severity / Impact / Recommendation` shape from [OUTPUT_TEMPLATE.md](OUTPUT_TEMPLATE.md).
+Worked example findings. These are **illustrative**, fabricated to calibrate the *style,
+specificity, and severity* of findings — they do not describe any real product. Notice that every
+finding names a concrete state/flow/component and follows the `Issue / Severity / Impact /
+Recommendation` shape from [OUTPUT_TEMPLATE.md](OUTPUT_TEMPLATE.md), and that every finding is
+**behavioral** — about how the product *behaves*, not how it looks.
+
+The first set demonstrates the **logic-first** scope directly (including how to handle a visual
+observation). The later sets show full findings across five product types.
+
+---
+
+## Logic-first findings (and the visual-observation judgment call)
+
+### Example 1 — Missing Loading State
+
+**Issue:** When the user submits a "Generate report" request, the button click produces no progress feedback — the screen is unchanged for ~4s until the result appears.
+**Severity:** High
+**Impact:** Users can't tell whether the click registered, so they click again (triggering duplicate requests) or assume the product is broken and abandon the task.
+**Recommendation:** Acknowledge the submission immediately (button → loading state, skeleton/progress on the target area) and disable re-submit until the request resolves. (Checklist 09 Feedback; 04 Page States — Loading)
+
+### Example 2 — Duplicate Submission Risk
+
+**Issue:** The submit button stays active and clickable while the request is in flight; rapid or repeated clicks each fire a separate create request.
+**Severity:** Critical
+**Impact:** Users create duplicate records (or double-charge a payment) through ordinary impatience on a slow network — a data-integrity failure.
+**Recommendation:** Disable the button on first click, show an in-progress state, and guard the mutation server-side with idempotency. (Checklist 06 Forms — duplicate submission prevention; 08 Destructive Actions — race conditions)
+
+### Example 3 — State Loss After Refresh
+
+**Issue:** In a multi-step setup wizard, a browser refresh on step 4 returns the user to step 1 with all prior input discarded.
+**Severity:** High
+**Impact:** Any accidental refresh, tab reload, or session blip throws away substantial work; users re-enter everything or give up, hurting completion.
+**Recommendation:** Persist wizard progress (autosave per step) and restore to the last completed step on reload. (Checklist 02 User Flows — resume/draft recovery; 04 Page States — refresh recovery)
+
+### Example 4 — Permission Failure Without Recovery
+
+**Issue:** A member-role user opens a shared admin link and sees a bare "403 — Not authorized" with no further information or action.
+**Severity:** High
+**Impact:** The user is stranded: they don't know *why* they're blocked, what access they'd need, or how to proceed — a dead end on a real path.
+**Recommendation:** Explain the constraint ("This area requires Admin access") and offer a next step (request access, switch account, contact workspace owner). (Checklist 12 Permissions & Access Control — authorization failure recovery)
+
+### Example 5 — AI Context Loss
+
+**Issue:** In a multi-turn AI assistant, after a tool call the assistant silently drops the earlier conversation context and answers a follow-up as if starting fresh — contradicting its prior answer.
+**Severity:** High
+**Impact:** Users get inconsistent, lower-trust answers with no signal that context was lost, and no way to see or restore what the model is using.
+**Recommendation:** Preserve and surface active context, signal when context is reset, and let users inspect/restore it. (Checklist 21 AI Experience — AI Memory and Context; context loss)
+
+### Example 6 — Visual Observation That Should NOT Be Logged
+
+**Observation:** A card in the dashboard grid has ~2px more internal padding than its neighbors.
+**Verdict:** **Do not log.** This is a pure visual-polish detail. The cards are still clearly distinct, every action is reachable and unambiguous, and nothing about task completion, comprehension, accessibility, data integrity, or workflow safety is affected. Under the logic-first scope, an aesthetic inconsistency with **no material behavioral impact is not a bug** — logging it would drift the audit toward visual-design critique.
+
+### Example 7 — Visual Observation That SHOULD Be Logged
+
+**Issue:** The "Delete project" (destructive) and "Duplicate project" (non-destructive) buttons are visually identical — same color, size, and weight — and sit adjacent in the row actions.
+**Severity:** High
+**Impact:** Because the destructive and non-destructive actions are indistinguishable and adjacent, users select the wrong one and delete projects by accident — a workflow-safety and data-integrity risk.
+**Recommendation:** Differentiate the destructive action (distinct treatment + separation) and add a confirmation/undo for delete. **This is logged not as a styling note but because the lack of visual distinction creates a measurable accidental-deletion risk** — exactly the kind of visual observation that *does* belong in this audit. (Checklist 08 Destructive Actions; 22 Cross-Page & Cross-Component Consistency)
 
 ---
 

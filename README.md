@@ -1,49 +1,69 @@
 # Interaction Intelligence Audit
 
-A reusable, **coding-agent-agnostic** skill that performs a comprehensive **interaction-design, product-readiness, and release audit** of web apps, SaaS products, AI products, workflow builders, dashboards, and mobile products — then returns a severity-ordered, evidence-based report you can take straight into sprint planning.
+**Interaction Intelligence Audit is a coding-agent-agnostic workflow for auditing and remediating interaction logic, user-flow integrity, product-state failures, and AI-native interaction risks.**
 
-It runs on any repository-capable coding agent — [Claude Code](https://claude.com/claude-code), OpenAI Codex, Cursor, Windsurf, Gemini CLI, the GitHub Copilot coding agent, and equivalent tools — because it relies only on generic repository operations and a set of Markdown instructions. It systematically hunts for the things that make users fail, the product logic break, or the release slip.
+> **This skill focuses on how a product behaves, not how it looks.**
 
-> This is **not** a visual-style critique tool. It does not score color, typography, or brand taste. Its subject is interaction quality, product logic, missing states, edge cases, failure recovery, accessibility, analytics, performance, and release readiness.
+It is **logic-first**: it detects and remediates **behavioral failures** in software products — issues that affect task completion, data integrity, recoverability, trust, and product readiness — then returns a severity-ordered, evidence-based report you can take straight into sprint planning. It deliberately distinguishes itself from visual UI-review tools.
 
----
+It is designed to work with repository-capable coding agents — [Claude Code](https://claude.com/claude-code), OpenAI Codex, Cursor, Windsurf, Gemini CLI, the GitHub Copilot coding agent, and equivalent tools — because it relies only on generic repository operations and a set of Markdown instructions.
 
-## What it audits
-
-The skill walks a 21-category framework, from entry conditions through release readiness and AI experience:
-
-1. **Preconditions** — auth, account, user-type, network, and backend states before the "real" UI matters.
-2. **User flows** — happy, success, failure, and interrupted paths; draft recovery, autosave, session restore, resume.
-3. **Information architecture** — navigation, discoverability, hierarchy, mental-model alignment.
-4. **Page states** — default, empty, loading, and error states for every meaningful screen.
-5. **Data states** — empty/missing/long/short data, large numbers, decimals, timezones, refresh, pagination, cache.
-6. **Forms** — validation, error messaging, submission states, duplicate-submission prevention.
-7. **Components** — hover, focus, selected, disabled, and loading states for interactive elements.
-8. **Destructive actions** — delete, cancel, logout, payment; confirmation, undo, recovery.
-9. **Feedback** — warnings, loading, progress, success, failure, partial success.
-10. **Motion** — transitions, gestures, animation consistency, reduced-motion.
-11. **Error handling** — network, backend, authentication, and data-conflict failures.
-12. **Permissions** — in-context requests, denial flows, re-enable guidance.
-13. **Accessibility** — contrast, keyboard, screen reader, alt text, semantic structure.
-14. **Responsive design** — mobile, tablet, desktop, ultrawide, dark mode, landscape.
-15. **Internationalization** — language expansion, currency, dates, RTL.
-16. **Analytics** — exposure, click, conversion, and funnel instrumentation.
-17. **Performance** — first load, navigation speed, image loading, smoothness, interaction latency.
-18. **Versioning** — forced/optional updates, rollback, data compatibility.
-19. **Security & privacy** — minimal requests, disclosures, data protection, abuse prevention (UX-facing).
-20. **Release readiness** — design fidelity, functional completeness, analytics readiness, rollback readiness.
-21. **AI experience** — transparency, confidence/evidence, failure recovery, human override, multi-agent coordination, memory/context, trust and auditability.
-
-See [CHECKLIST.md](CHECKLIST.md) for the full, actionable framework.
-
----
-
-## Two modes
+The skill works in three modes:
 
 - **Mode A — One-shot Audit** *(default)*: walk the framework and return a single severity-ordered report ([OUTPUT_TEMPLATE.md](OUTPUT_TEMPLATE.md)). Nothing is written to the target unless you ask.
 - **Mode B — Persistent Remediation**: audit *and* fix issues **one at a time, under human review**, keeping an append-only history (`bug.md` / `changelog.md` / decision log) **inside the target repository**. Fix one → stop → await explicit human review → continue. See [WORKFLOW.md](WORKFLOW.md); scaffolds live in [templates/](templates/).
+- **Mode C — Regression Re-Audit**: compare *current* behavior against the target repo's historical records, re-check the workflows behind previously closed issues, and report reopened issues, new regressions, still-open issues, verified-closed issues, and approved decisions no longer respected. Regressions are logged as **new** entries (`Type: Regression`, `Related Bug: BUG-XXX`). It stops after the regression report unless explicitly asked to enter Mode B. See [WORKFLOW.md](WORKFLOW.md).
 
-In Mode B, **all runtime records are created inside the product repository being audited — never inside this skill repository.**
+In Mode B and Mode C, **all runtime records are created inside the product repository being audited — never inside this skill repository.** A mandatory preflight confirms the target repository is not the skill repository before anything is written.
+
+---
+
+## What This Skill Audits
+
+The framework is **logic-first**, organized as seven primary domains (Tier 1), with a smaller set of conditional/secondary checks (Tier 2). See [CHECKLIST.md](CHECKLIST.md) for the full, actionable framework (sections `01`–`23`).
+
+**Tier 1 — Primary Logic Audit (always in scope):**
+
+1. **User-Flow Integrity** — can users complete important tasks? Broken workflows, dead ends, unclear next actions, missing back-navigation, interrupted flows, lost progress, invalid transitions, unclear completion, workflow loops, abandonment risk.
+2. **Product-State Logic** — loading, empty, error, success, partial-success, retry, disabled, and stale states; optimistic updates and rollback; refresh/session recovery; persistence after navigation; conflict handling; state synchronization across pages.
+3. **Action Safety & Data Integrity** — duplicate submission, silent mutations, accidental/destructive actions without confirmation, missing undo, save failures, unsaved-change risk, data loss, late or missing validation, irreversible-action clarity, race conditions, permission failures without recovery.
+4. **Cross-Page & Cross-Component Consistency** — equivalent actions behaving consistently: button outcomes, validation, save/retry/navigation/permission behavior, object status, duplicated logic, loading/error behavior, modal/confirmation rules.
+5. **Permissions & Access Control** — inaccessible actions still appearing actionable, missing permission explanations, authorization failure without recovery guidance, inconsistent role behavior, hidden permission-driven state changes, unsafe fallbacks.
+6. **AI-Native Interaction Logic** *(first-class)* — AI processing/progress states, failure recovery, context loss, memory overwrite, stale context, provenance/evidence, confidence, generated-vs-verified distinction, human override, unsafe auto-apply, multi-agent coordination, escalation paths, transparency, auditability.
+7. **Regression & Release Readiness** — reopened workflow failures, reappearing bugs, violated approved decisions, incompatible cross-flow changes, missing validation coverage, release-blocking interaction risks, migration-related state failures, version compatibility.
+
+**Tier 2 — Conditional / Secondary (audited only when an issue creates a functional, accessibility, comprehension, data-integrity, or workflow-safety impact):** Motion, Accessibility, Responsive Design, Internationalization, Analytics, Performance, Security & Privacy.
+
+---
+
+## What This Skill Does Not Audit
+
+This skill is **not** a visual-design review tool. It does **not** evaluate:
+
+- visual aesthetics, brand styling, color-palette quality
+- typography taste, decorative spacing polish, illustration style
+- icon-style consistency, visual-trend alignment, subjective design preferences
+- Figma craftsmanship or pixel-perfect visual review
+
+Visual observations are reported **only** when they create a measurable functional, accessibility, comprehension, or workflow problem — and then they are reported as that problem, not as an aesthetic note:
+
+```text
+Do not report:
+"The button color is not visually polished."
+
+Report:
+"The primary action has insufficient contrast, making the action difficult to identify and
+increasing task-completion risk."
+```
+
+```text
+Do not report:
+"The spacing between cards feels inconsistent."
+
+Report:
+"The spacing causes unrelated actions to appear grouped together, increasing the risk of
+selecting the wrong action."
+```
 
 ---
 
@@ -83,7 +103,7 @@ The frontmatter in `SKILL.md` is optional metadata used only by some agents (e.g
 
 ## Usage
 
-Describe what to audit and which mode you want. The skill works from a described surface, a URL, screenshots/design frames, or a step-by-step flow.
+Describe what to audit and which mode you want. Mode A can begin from a described surface, URL, screenshots, design frames, or a step-by-step flow. Deeper validation of state transitions, persistence, permissions, and regressions may require repository access, runtime inspection, or manual verification.
 
 **Mode A — report only:**
 
@@ -108,38 +128,55 @@ human override, and auditability (CHECKLIST.md section 21). Report only.
 
 ```text
 Run the Interaction Intelligence Audit in Persistent Remediation mode (WORKFLOW.md).
-Scaffold bug.md / changelog.md in THIS repo from templates/, record findings,
-then fix only the highest-priority issue, stop, and wait for my review.
+Confirm the target repo (not the skill repo), scaffold bug.md / changelog.md in the
+TARGET repo from templates/, record findings, then fix only the highest-priority issue,
+stop, and wait for my review.
+```
+
+**Mode C — regression re-audit:**
+
+```text
+Run the Interaction Intelligence Audit in Regression Re-Audit mode (Mode C, WORKFLOW.md).
+Read the target repo's existing bug.md / changelog.md / interaction decisions, re-check the
+workflows behind previously closed issues, and produce a regression report (reopened, new
+regressions, still-open, verified-closed, and violated approved decisions). Log regressions
+as new Type: Regression entries referencing the original bug IDs, then stop.
 ```
 
 See [PROMPT.md](PROMPT.md) for the full fill-in templates and audit personas.
 
 ---
 
-## Output format
+## Output Format
 
-The skill returns a single structured report (see [OUTPUT_TEMPLATE.md](OUTPUT_TEMPLATE.md)). Findings are grouped by severity, highest-risk first:
+**Mode A** returns a single structured audit report based on [OUTPUT_TEMPLATE.md](OUTPUT_TEMPLATE.md).
 
-```text
-Critical
-High
-Medium
-Low
-```
+**Mode B** maintains persistent remediation records inside the target repository, including `bug.md`, `changelog.md`, and interaction-decision history.
 
-Each finding follows an `Issue / Severity / Impact / Recommendation` shape and names a concrete state, flow, component, or screen. The report also includes:
+**Mode C** returns a regression report and logs newly identified regressions as new bug entries referencing the original issue IDs.
 
-- an **Executive Summary** with an overall score (`X/100`) and top risks,
-- **Category scores** mapped to the framework, and
-- a **Recommended Next Sprint** (Priority 1 / 2 / 3).
+Mode A findings are grouped by severity, highest-risk first:
 
-See [EXAMPLES.md](EXAMPLES.md) for worked example findings across five product types.
+- Critical
+- High
+- Medium
+- Low
+
+Each finding identifies a concrete state, flow, component, or screen and follows an Issue / Severity / Impact / Recommendation structure.
+
+The report also includes:
+
+- an Executive Summary with top behavioral risks and an optional heuristic risk score
+- category-level risk indicators mapped to the framework
+- a Recommended Next Sprint (Priority 1 / 2 / 3)
+
+See [EXAMPLES.md](EXAMPLES.md) for worked example findings, including logic-first examples and per-product-type findings.
 
 ---
 
 ## AI-native product coverage
 
-When the target is an AI or agent product, the skill treats its dedicated **AI Experience** section as primary scope. It covers:
+When the target is an AI or agent product, the skill treats its dedicated **AI-Native Interaction Logic** section as primary scope. It covers:
 
 - **Model transparency** — what the AI is doing, and whether output was generated, retrieved, inferred, or entered.
 - **Confidence and evidence** — uncertainty signals, citations, verifiable sources.
