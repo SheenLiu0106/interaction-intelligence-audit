@@ -39,6 +39,14 @@
 - [ ] Mobile layout works.
 - [ ] No clipped or overflowing content.
 
+## Evidence & Runtime Verification
+
+- [ ] Evidence Level recorded for the verified fix (Static Inference / Runtime Observed / Test Verified / Human Verified).
+- [ ] Runtime behavior exercised where available (dev server / browser / E2E).
+- [ ] Automated test added or updated where feasible.
+- [ ] Checks that could not be run are marked "Manual Verification Required" with exact steps.
+- [ ] No finding is claimed runtime-verified unless runtime validation was actually performed.
+
 ## Historical Compatibility
 
 - [ ] Previously approved interaction decisions remain intact.

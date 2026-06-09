@@ -7,11 +7,15 @@ This audit is **logic-first**: it audits *how a product behaves* — interaction
 > Do not perform subjective visual-design critique.
 > Only report visual issues when they create functional, accessibility, comprehension, or workflow risk.
 
-There are three modes — pick one at the bottom of this file:
+There are five modes — pick one at the bottom of this file:
 
 - **Mode A — One-shot Audit:** report only, in [OUTPUT_TEMPLATE.md](OUTPUT_TEMPLATE.md) format.
 - **Mode B — Persistent Remediation:** audit *and* fix one issue at a time under human review, per [WORKFLOW.md](WORKFLOW.md).
 - **Mode C — Regression Re-Audit:** compare current behavior against the target repo's historical records and report regressions, per [WORKFLOW.md](WORKFLOW.md).
+- **Mode D — Targeted Runtime-Assisted Flow Audit:** validate one named critical flow with the strongest available runtime evidence, per [WORKFLOW.md](WORKFLOW.md).
+- **Mode E — Scoped Static Flow Audit:** statically analyze one named flow in a large repo without runtime access, per [WORKFLOW.md](WORKFLOW.md).
+
+**Every finding** carries an **append-only, multi-stage** evidence classification — **Initial Evidence Level** and **Current Verification Level** (`Static Inference` → `Runtime Observed` → `Test Verified` → `Human Verified`; types may coexist), **Verification Status**, **Confidence**, and an append-only **Evidence History** (`Type` / `Source` / `Timestamp` / `Notes`) — plus **Audit Profile**, **Risk if Unfixed**, **Implementation Effort**, and **Recommended Timing**. *Evidence Level* says **where evidence came from**; *Verification Status* says **whether it's sufficient to confirm**. Static code inspection is the **minimum** capability, not the maximum: use the strongest validation the environment allows, and **never claim a finding is runtime-verified unless runtime validation was actually performed.** Default **Audit Profile: Production** — if the product stage is unclear, ask; if unanswered, use Production and state the assumption.
 
 ---
 
@@ -62,6 +66,10 @@ User roles in scope: [e.g. new, returning, premium, admin, suspended, restricted
 Platforms: [web | mobile-web | ios | android | tablet | desktop-app]
 AI product: [yes/no — if yes, prioritize Section 21]
 Release stage: [prototype | beta | pre-launch | live]
+Audit Profile: [MVP | Production | High-Risk / Regulated — default Production if unclear]
+Target Flow: [optional — name one flow to prioritize, e.g. checkout / auth / refresh recovery]
+Runtime Validation: [available tooling — dev server | Playwright | Cypress | existing E2E | browser preview | none]
+Evidence Level Requirements: [e.g. label every finding with Initial Evidence Level + Current Verification Level + Evidence History; require Runtime Observed / Test Verified before treating a Critical as confirmed]
 Known constraints / out of scope: [anything already accepted or excluded]
 
 Think like a Staff Product Designer + QA Lead + Product Manager — not a visual designer.
@@ -69,6 +77,10 @@ Focus on interaction logic, workflow integrity, product-state handling, action s
 failure recovery, cross-page consistency, AI-native behavior, and release readiness.
 Do not perform subjective visual-design critique; only report a visual issue when it creates
 functional, accessibility, comprehension, or workflow risk.
+Label every finding with Initial Evidence Level, Current Verification Level, Verification Status,
+Confidence, and an append-only Evidence History, and tune severity to the Audit Profile. Use
+cautious language ("may", "appears to", "could") for any finding whose current level is only a
+Static Inference, and never claim runtime verification you did not perform.
 Walk CHECKLIST.md Tier 1 (sections 01–23) first, then Tier 2 conditional sections only where they
 create material impact; prioritize the highest-risk behavioral issues first, and return the report
 in OUTPUT_TEMPLATE.md format.
@@ -155,5 +167,94 @@ Mode C lifecycle:
 Read records
 → Re-check affected workflows
 → Report regressions (log as new Type: Regression entries)
+→ Stop
+```
+
+---
+
+## Mode D — Targeted Runtime-Assisted Flow Audit (validate one flow with runtime evidence)
+
+Use this to validate **one explicitly named critical flow** with the strongest available runtime
+evidence. Mode D does **not** attempt broad full-product automation and **does not install new
+dependencies** without explicit approval. Full procedure: [WORKFLOW.md](WORKFLOW.md); report
+format: [templates/audit/targeted-runtime-flow-report.md](templates/audit/targeted-runtime-flow-report.md).
+
+```
+Run the Interaction Intelligence Audit in Targeted Runtime-Assisted Flow Audit mode (Mode D, follow WORKFLOW.md).
+
+Target product repository: [absolute path to the repo to audit — REQUIRED]
+Target flow: [ONE flow — e.g. authentication | onboarding | checkout | document upload |
+              dashboard loading | permission downgrade | AI-agent execution | AI memory reset |
+              approval workflow | form submission | state recovery after refresh]
+Audit Profile: [MVP | Production | High-Risk / Regulated]
+Runtime tooling: [dev server | Playwright | Cypress | existing E2E | browser preview | screenshots |
+                  API mocks | none — describe]
+
+0. PREFLIGHT (before running anything): resolve the skill repo and target product repo paths and
+   confirm they are NOT the same directory. Identify the target flow. Inspect available scripts and
+   runtime capabilities. Determine whether a dev server can be started. Detect available validation
+   tools. State what can and cannot be validated. Do NOT install new dependencies unless I approve.
+1. Map the flow: entry point, routes, components, state stores, API calls, failure paths, recovery paths.
+2. Perform static inspection first.
+3. Start the runtime environment when available and exercise the target flow.
+4. Test relevant state transitions and simulate failure conditions when tooling allows.
+5. Capture evidence. Log findings with Evidence Level, Confidence, Verification Status, Evidence Source.
+6. Produce the targeted runtime report; mark untested scenarios "Runtime Verification Recommended"
+   with manual steps. Do not claim a scenario was tested unless it was actually executed.
+7. STOP after the report. Enter Mode B (fix one issue) only if I explicitly ask.
+```
+
+Mode D lifecycle:
+
+```text
+Select one flow
+→ Map entry/routes/components/state/API/failure/recovery
+→ Static inspection
+→ Start runtime when available
+→ Exercise flow + state transitions + simulated failures
+→ Capture evidence
+→ Log findings with Evidence Level + Verification Status
+→ Produce targeted runtime report
+→ Stop
+```
+
+---
+
+## Mode E — Scoped Static Flow Audit (one flow, no runtime, large-repo friendly)
+
+Use this in a large repository to analyze **one explicitly named flow** statically, **without**
+runtime access — inspecting only the relevant files to reduce context-window overload and false
+positives. Full procedure: [WORKFLOW.md](WORKFLOW.md); report format:
+[templates/audit/scoped-static-flow-report.md](templates/audit/scoped-static-flow-report.md).
+
+```
+Run the Interaction Intelligence Audit in Scoped Static Flow Audit mode (Mode E, follow WORKFLOW.md).
+
+Target product repository: [absolute path to the repo to audit — REQUIRED]
+Target flow: [ONE flow — e.g. authentication | onboarding | checkout | document upload |
+              AI memory reset | agent approval flow | permission downgrade | dashboard refresh recovery]
+Audit Profile: [MVP | Production | High-Risk / Regulated]
+
+0. PREFLIGHT: resolve the skill repo and target product repo paths and confirm they differ.
+1. Map the flow first: entry, relevant routes, components, state stores, API calls, permission
+   rules, failure paths, recovery paths, related existing bugs, related approved decisions.
+2. Inspect ONLY the files relevant to that flow unless evidence requires expansion. Do NOT scan the
+   whole repository by default.
+3. If the flow cannot be confidently mapped, STATE the uncertainty and ask me to clarify.
+4. Do NOT make cross-page consistency claims unless the relevant pages and shared logic were
+   actually inspected.
+5. Produce the scoped report distinguishing: Inspected Files, Uninspected Areas, Known Limitations,
+   Static Inferences, Runtime Verification Recommended. Label findings with Evidence Level and
+   Verification Status (these are static — default to Static Inference + Runtime Verification
+   Recommended unless tests confirm otherwise).
+6. STOP after the scoped report. Enter Mode B (fix one issue) only if I explicitly ask.
+```
+
+Mode E lifecycle:
+
+```text
+Map one flow (entry/routes/components/state/API/permissions/failure/recovery)
+→ Inspect only relevant files
+→ Report (Inspected Files / Uninspected Areas / Known Limitations / Static Inferences)
 → Stop
 ```

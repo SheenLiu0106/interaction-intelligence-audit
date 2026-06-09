@@ -11,6 +11,9 @@
 ### BUG-001 — <short descriptive title>
 
 Status: Fixed — Awaiting Human Review
+Audit Profile: <MVP | Production | High-Risk / Regulated>
+Current Verification Level: <strongest evidence reached; may combine, e.g. "Runtime Observed + Test Verified">
+Verification Status: <Verified | Runtime Verification Recommended | Manual Verification Required | Not Yet Verified>
 
 #### Objective
 
@@ -18,7 +21,7 @@ Status: Fixed — Awaiting Human Review
 
 #### Files Modified
 
-- <path/to/file>
+- <path/to/file — only the files necessary for this issue>
 
 #### Changes Applied
 
@@ -32,6 +35,22 @@ Status: Fixed — Awaiting Human Review
 #### Behavior After
 
 <Updated behavior.>
+
+#### Validation Performed
+
+- <checks actually run: tests / typecheck / lint / build / runtime — with results>
+
+#### Validation Not Available
+
+- <checks that could not be run in this environment>
+
+#### Manual Verification Steps
+
+- <exact steps for the reviewer to confirm the fix>
+
+#### Regression Risks
+
+- <related flows that could be affected>
 
 #### Regression Checks
 

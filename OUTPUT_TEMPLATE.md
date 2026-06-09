@@ -4,12 +4,47 @@ Produce the report in **exactly** this structure and order. This is a **logic-fi
 audit, not a visual-design scorecard** — findings concern workflow integrity, product-state
 logic, recovery behavior, action safety, permissions, cross-page consistency, AI-native
 interaction risks, and regression/release readiness. Lead with the highest-risk behavioral
-issues. Every issue uses the `Issue / Severity / Impact / Recommendation` shape. Do not invent
-findings to fill a section — if a severity tier is empty, say "None found."
+issues. Every issue uses the **finding shape** below. Do not invent findings to fill a section —
+if a severity tier is empty, say "None found."
 
 **Visual observations are not findings on their own.** Include a visual detail only as
 *supporting evidence* for a behavioral problem (functional, accessibility, comprehension,
 data-integrity, or workflow-safety impact), and describe the impact — not the aesthetic.
+
+**Do not overstate certainty.** Every finding states how it was identified and how strongly it is
+verified. Never present a `Static Inference` as confirmed runtime fact; use cautious language
+(*"may," "appears to," "could," "requires runtime verification"*) for anything not actually
+observed, tested, or human-confirmed.
+
+---
+
+## Finding shape (every issue uses these fields)
+
+Evidence is **append-only and multi-stage** — keep `Evidence History`, don't overwrite a single
+level; types may coexist (e.g. `Runtime Observed + Test Verified`).
+
+```text
+Issue:                      <specific, evidence-based — name the state/flow/component/screen>
+Severity:                   Critical | High | Medium | Low
+Audit Profile:              MVP | Production | High-Risk / Regulated
+Initial Evidence Level:     Static Inference | Runtime Observed | Test Verified | Human Verified
+Current Verification Level: strongest evidence reached (may combine, e.g. "Runtime Observed + Test Verified")
+Verification Status:        Verified | Runtime Verification Recommended | Manual Verification Required | Not Yet Verified
+Confidence:                 High | Medium | Low
+Evidence History:           append-only — one entry per evidence addition:
+  - Type: <...>  Source: <file / route / component / state store / API / test / observation / screenshot / note>  Timestamp: <YYYY-MM-DD HH:mm>  Notes: <...>
+Risk if Unfixed:            <what happens to the user / business if shipped as-is>
+Implementation Effort:      Low | Medium | High
+Recommended Timing:         Blocker | Current Sprint | Backlog | Defer
+Impact:                     <who is affected and what it costs them / the business>
+Recommendation:             <concrete, actionable fix>
+Manual Verification Steps:  <exact reviewer steps when Verification Status is not "Verified">
+```
+
+**Evidence Level vs. Verification Status — different axes:** *Evidence Level* describes **where the
+evidence came from**; *Verification Status* describes **whether the available evidence is sufficient
+to confirm** the issue or fix. (e.g. `Static Inference` → `Runtime Verification Recommended`;
+`Runtime Observed + Test Verified` → `Verified`.)
 
 ---
 
@@ -28,7 +63,9 @@ Scores are honest, not generous. Mark a category `N/A` if it could not be assess
 
 **Audited:** <what was audited — surface, platforms, roles, release stage>
 
-**Overall Score: X/100**
+**Audit Profile:** <MVP | Production | High-Risk / Regulated>
+
+**Overall Score: X/100** <optional heuristic risk score — not a precision metric>
 
 **Top Risks:**
 - <highest-risk behavioral issue, one line — workflow / state-logic / recovery / action-safety / permission / cross-page / AI-native / regression>
@@ -43,10 +80,27 @@ Scores are honest, not generous. Mark a category `N/A` if it could not be assess
 
 > Release blockers. Each must be resolved (or explicitly accepted) before ship.
 
-**Issue:** <specific, evidence-based — name the state/flow/component/screen>
-**Severity:** Critical
-**Impact:** <who is affected and what it costs them / the business>
-**Recommendation:** <concrete, actionable fix>
+Each issue uses the full **finding shape** above (Issue · Severity · Audit Profile · Evidence
+Level · Confidence · Verification Status · Evidence Source · Risk if Unfixed · Implementation
+Effort · Recommended Timing · Impact · Recommendation · Manual Verification Steps).
+
+```text
+Issue:                      <name the state/flow/component/screen>
+Severity:                   Critical
+Audit Profile:              <MVP | Production | High-Risk / Regulated>
+Initial Evidence Level:     <Static Inference | Runtime Observed | Test Verified | Human Verified>
+Current Verification Level: <strongest evidence reached; may combine, e.g. "Runtime Observed + Test Verified">
+Verification Status:        <Verified | Runtime Verification Recommended | Manual Verification Required | Not Yet Verified>
+Confidence:                 <High | Medium | Low>
+Evidence History:
+  - Type: <...>  Source: <...>  Timestamp: <YYYY-MM-DD HH:mm>  Notes: <...>
+Risk if Unfixed:            <consequence if shipped as-is>
+Implementation Effort:      <Low | Medium | High>
+Recommended Timing:         <Blocker | Current Sprint | Backlog | Defer>
+Impact:                     <who is affected and what it costs>
+Recommendation:             <concrete, actionable fix>
+Manual Verification Steps:  <exact reviewer steps when not "Verified">
+```
 
 <repeat per issue, or "None found.">
 
@@ -54,10 +108,8 @@ Scores are honest, not generous. Mark a category `N/A` if it could not be assess
 
 # High Priority Issues
 
-**Issue:**
-**Severity:** High
-**Impact:**
-**Recommendation:**
+Use the full **finding shape** above. (For a Static Inference, use cautious language and set
+Verification Status to `Runtime Verification Recommended` or `Manual Verification Required`.)
 
 <repeat per issue, or "None found.">
 
@@ -65,10 +117,7 @@ Scores are honest, not generous. Mark a category `N/A` if it could not be assess
 
 # Medium Priority Issues
 
-**Issue:**
-**Severity:** Medium
-**Impact:**
-**Recommendation:**
+Use the full **finding shape** above.
 
 <repeat per issue, or "None found.">
 
@@ -76,12 +125,24 @@ Scores are honest, not generous. Mark a category `N/A` if it could not be assess
 
 # Low Priority Improvements
 
-**Issue:**
-**Severity:** Low
-**Impact:**
-**Recommendation:**
+Use the full **finding shape** above.
 
 <repeat per issue, or "None found.">
+
+---
+
+# Verification & Evidence Summary
+
+Group every finding above by how strongly it is verified, so the reader can separate confirmed
+defects from code-level hypotheses. (Counts + the BUG/issue references in each bucket.)
+
+- **Verified Findings** (Runtime Observed / Test Verified / Human Verified): <count> — <refs>
+- **Static Inferences** (code-level, not yet runtime-confirmed): <count> — <refs>
+- **Runtime Verification Recommended:** <count> — <refs + the tooling that would confirm them>
+- **Manual Verification Required:** <count> — <refs + exact reviewer steps>
+
+State the **runtime tooling actually used** (if any) and what could not be validated in this
+environment. Do not claim a step passed unless it was actually performed.
 
 ---
 

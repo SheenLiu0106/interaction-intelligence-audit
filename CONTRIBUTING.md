@@ -25,7 +25,13 @@ The Mode B (persistent remediation) and Mode C (regression re-audit) lifecycles 
 
 ## Guidelines
 
-- **Keep the scope logic-first.** Contributions should strengthen interaction logic auditing, workflow integrity, state handling, action safety, AI-native behavior, or remediation traceability. Avoid expanding the project into a general-purpose visual-design review framework.
+- **Keep the scope logic-first.** Do not expand the project into a visual-design auditor, E2E framework, or full browser-testing platform. Contributions should strengthen:
+  - interaction-logic auditing
+  - evidence quality
+  - runtime-aware validation
+  - scoped flow analysis
+  - remediation safety
+  - profile-sensitive prioritization
 - **Keep it generic.** This framework is meant to work across web apps, SaaS, AI products, workflow builders, dashboards, and mobile. Avoid tying checks or examples to one specific product or company.
 - **Stay agent-agnostic.** The skill must run on any repository-capable coding agent. Don't introduce a dependency on a vendor-specific tool, slash command, memory system, or planning mode.
 - **No private or sensitive content.** Do not add proprietary, internal, confidential, or personally identifying information, secrets, tokens, or private paths.

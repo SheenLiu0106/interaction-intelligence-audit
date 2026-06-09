@@ -8,13 +8,17 @@ It is **logic-first**: it detects and remediates **behavioral failures** in soft
 
 It is designed to work with repository-capable coding agents — [Claude Code](https://claude.com/claude-code), OpenAI Codex, Cursor, Windsurf, Gemini CLI, the GitHub Copilot coding agent, and equivalent tools — because it relies only on generic repository operations and a set of Markdown instructions.
 
-The skill works in three modes:
+The skill works in five modes:
 
 - **Mode A — One-shot Audit** *(default)*: walk the framework and return a single severity-ordered report ([OUTPUT_TEMPLATE.md](OUTPUT_TEMPLATE.md)). Nothing is written to the target unless you ask.
 - **Mode B — Persistent Remediation**: audit *and* fix issues **one at a time, under human review**, keeping an append-only history (`bug.md` / `changelog.md` / decision log) **inside the target repository**. Fix one → stop → await explicit human review → continue. See [WORKFLOW.md](WORKFLOW.md); scaffolds live in [templates/](templates/).
 - **Mode C — Regression Re-Audit**: compare *current* behavior against the target repo's historical records, re-check the workflows behind previously closed issues, and report reopened issues, new regressions, still-open issues, verified-closed issues, and approved decisions no longer respected. Regressions are logged as **new** entries (`Type: Regression`, `Related Bug: BUG-XXX`). It stops after the regression report unless explicitly asked to enter Mode B. See [WORKFLOW.md](WORKFLOW.md).
+- **Mode D — Targeted Runtime-Assisted Flow Audit**: validate **one named critical flow** using the strongest available runtime evidence (dev server, existing E2E suite, browser preview, screenshots), falling back to flagged static inference when no runtime tooling exists. See [WORKFLOW.md](WORKFLOW.md).
+- **Mode E — Scoped Static Flow Audit**: statically analyze **one named flow** in a large repo without runtime access, inspecting only the relevant files to reduce context overload and false positives. See [WORKFLOW.md](WORKFLOW.md).
 
-In Mode B and Mode C, **all runtime records are created inside the product repository being audited — never inside this skill repository.** A mandatory preflight confirms the target repository is not the skill repository before anything is written.
+In Modes B, C, D, and E, **all runtime records are created inside the product repository being audited — never inside this skill repository.** A mandatory preflight confirms the target repository is not the skill repository before anything is written.
+
+**Recommended use:** A — broad initial audit · B — controlled remediation · C — regression re-audit · D — targeted runtime validation · E — targeted static analysis for large repos.
 
 ---
 
@@ -185,6 +189,24 @@ When the target is an AI or agent product, the skill treats its dedicated **AI-N
 - **Multi-agent coordination** — agent roles, handoffs, task status and ownership.
 - **AI memory and context** — what context is in use, and whether users can inspect, edit, or reset it.
 - **Trust and auditability** — explainability, audit trails, traceability to sources and tools.
+
+---
+
+## Evidence classification
+
+Every finding states **how it was identified and how strongly it is verified**, so you can tell a confirmed defect from a code-level hypothesis. Evidence is **append-only and multi-stage** — a finding can progress `Static Inference → Runtime Observed → Test Verified → Human Verified`, and types may coexist. Each finding carries an **Initial Evidence Level**, a **Current Verification Level**, a **Verification Status** (`Verified` / `Runtime Verification Recommended` / `Manual Verification Required` / `Not Yet Verified`), **Confidence**, and an append-only **Evidence History**. *Evidence Level* says **where the evidence came from**; *Verification Status* says **whether it's sufficient to confirm**. A static-only finding uses cautious language and is **never** presented as confirmed runtime fact. Full field definitions: [WORKFLOW.md](WORKFLOW.md) and [OUTPUT_TEMPLATE.md](OUTPUT_TEMPLATE.md).
+
+## Audit profiles
+
+Pick a profile at intake — **MVP**, **Production**, or **High-Risk / Regulated** — and it tunes severity, recommendation depth, and timing so the audit neither over- nor under-engineers. **Default: Production** (if the stage is unclear the skill asks; if unanswered it uses Production and states the assumption). Findings also carry **Risk if Unfixed**, **Implementation Effort**, and **Recommended Timing**, prioritized by probability, user impact, product stage, data-integrity risk, and recovery difficulty — not theoretical possibility alone. Profile details: [SKILL.md](SKILL.md) / [WORKFLOW.md](WORKFLOW.md).
+
+## Runtime-aware validation & limitations
+
+**Static code inspection is the minimum capability, not the maximum.** The skill uses the strongest validation the current coding-agent environment allows — inspect code, run validation commands, start a dev server, use existing browser/E2E tooling — and clearly distinguishes inference from verified behavior when runtime validation is unavailable. It **never** claims a finding is runtime-verified unless runtime validation was actually performed.
+
+It does **not** ship a built-in browser runner, E2E framework, or usability-testing harness, and it **complements, rather than replaces,** runtime E2E testing, accessibility validation, visual QA, and human usability review.
+
+**Mode D** validates one named flow with the strongest available runtime evidence; **Mode E** statically analyzes one named flow in a large repo without runtime access (inspecting only relevant files to cut context overload and false positives). Both stop after their report unless you ask to enter Mode B. Procedures and report schemas: [WORKFLOW.md](WORKFLOW.md); scaffolds: [templates/audit/targeted-runtime-flow-report.md](templates/audit/targeted-runtime-flow-report.md) and [templates/audit/scoped-static-flow-report.md](templates/audit/scoped-static-flow-report.md).
 
 ---
 

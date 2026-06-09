@@ -62,6 +62,84 @@ observation). The later sets show full findings across five product types.
 
 ---
 
+## Evidence- and profile-aware findings (v0.4.0)
+
+These show the v0.4.0 finding fields — **Evidence Level, Confidence, Verification Status, Evidence
+Source, Audit Profile, Risk if Unfixed, Implementation Effort, Recommended Timing** — and the Mode
+D / Mode E report shapes. They are illustrative and fabricated.
+
+### Example 8 — Static inference requiring runtime verification
+
+**Issue:** The "Save" handler **appears to** fire the mutation without awaiting the prior request, so a quick second click *could* submit twice — inferred from the click handler in `CheckoutForm.tsx`, not yet reproduced.
+**Severity:** High · **Audit Profile:** Production
+**Initial Evidence Level:** Static Inference · **Current Verification Level:** Static Inference · **Verification Status:** Runtime Verification Recommended · **Confidence:** Medium
+**Evidence History:** Static Inference — `src/components/CheckoutForm.tsx:88` (onClick → `submitOrder()` not awaited; button not disabled), 2026-06-08 10:12 — "code shows no in-flight guard"
+**Risk if Unfixed:** Possible duplicate orders on a slow network. **Implementation Effort:** Low · **Recommended Timing:** Current Sprint
+**Impact:** If confirmed, users double-submit orders. **Recommendation:** Disable the button on first click and guard the mutation with idempotency.
+**Manual Verification Steps:** Run the app, open checkout on a throttled network, double-click Save, and confirm whether two orders are created. (Note the cautious "appears to / could" language — this is not presented as confirmed runtime fact.)
+
+### Example 9 — Runtime-observed duplicate submission
+
+**Issue:** Double-clicking "Place order" creates two orders — **reproduced** in the running app on a throttled connection.
+**Severity:** Critical · **Audit Profile:** Production
+**Initial Evidence Level:** Static Inference · **Current Verification Level:** Runtime Observed · **Verification Status:** Verified · **Confidence:** High
+**Evidence History:** (1) Static Inference — `OrderButton.tsx` stays enabled during request, 2026-06-08 10:20; (2) Runtime Observed — dev server `/checkout`, Network shows two `POST /orders` (201) from one rage-click, screenshot attached, 2026-06-08 11:05 — "reproduced; static inference confirmed"
+**Risk if Unfixed:** Confirmed duplicate charges and duplicate fulfillment. **Implementation Effort:** Low · **Recommended Timing:** Blocker
+**Impact:** Real users are double-charged. **Recommendation:** Disable on submit, show in-progress state, and enforce server-side idempotency keys.
+
+### Example 10 — Test-verified refresh recovery
+
+**Issue:** Wizard progress now survives a mid-flow refresh — **confirmed by an automated test**.
+**Severity:** N/A (verification of a fix) · **Audit Profile:** Production
+**Initial Evidence Level:** Runtime Observed · **Current Verification Level:** Runtime Observed + Test Verified · **Verification Status:** Verified · **Confidence:** High
+**Evidence History:** (1) Runtime Observed — manual reload on step 4 restored state, 2026-06-08 14:02; (2) Test Verified — Playwright spec `e2e/wizard-refresh.spec.ts` ("restores step 4 after reload") passing, 2026-06-08 14:30 — "locked in against regression"
+**Risk if Unfixed:** N/A — verified working. **Implementation Effort:** — · **Recommended Timing:** —
+**Impact:** Refresh no longer discards multi-step input. **Recommendation:** Keep the test in CI to prevent regression (cross-reference Section 23).
+
+### Example 11 — MVP-profile issue intentionally deferred
+
+**Issue:** On a triple-rapid tab-switch during upload, a transient flicker shows a stale count for ~200ms before correcting.
+**Severity:** Low · **Audit Profile:** MVP
+**Initial Evidence Level:** Runtime Observed · **Current Verification Level:** Runtime Observed · **Verification Status:** Verified · **Confidence:** High
+**Evidence History:** Runtime Observed — `/uploads`, rapid tab toggle shows ~200ms stale count, 2026-06-08 09:40 — "self-corrects"
+**Risk if Unfixed:** Brief cosmetic-adjacent flicker; self-corrects; no data loss, no wrong action. **Implementation Effort:** Medium · **Recommended Timing:** Defer
+**Impact:** Negligible at MVP stage. **Recommendation:** Defer — under the MVP profile this low-probability, self-correcting edge case is **intentionally not** worth complex synchronization work now. Revisit at Production profile.
+
+### Example 12 — Production-profile issue prioritized
+
+**Issue:** After an optimistic "Archive," a failed server call leaves the row hidden locally but still active on the server; a refresh resurrects it with no error shown.
+**Severity:** High · **Audit Profile:** Production
+**Initial Evidence Level:** Runtime Observed · **Current Verification Level:** Runtime Observed · **Verification Status:** Verified · **Confidence:** High
+**Evidence History:** Runtime Observed — `/projects`, archive with API forced to 500; state store `projectsStore` keeps row hidden, refresh resurrects it with no error, 2026-06-08 13:15
+**Risk if Unfixed:** Users believe items are archived when they are not — state desync and lost trust. **Implementation Effort:** Medium · **Recommended Timing:** Current Sprint
+**Impact:** Optimistic update never rolls back on failure. **Recommendation:** Roll back the optimistic change and surface a retryable error (Section 04 — optimistic updates & rollback).
+
+### Example 13 — High-Risk / Regulated issue treated as a blocker
+
+**Issue:** A clinician can finalize and lock a patient record with no audit-trail entry recording who approved it or when.
+**Severity:** Critical · **Audit Profile:** High-Risk / Regulated
+**Initial Evidence Level:** Static Inference · **Current Verification Level:** Static Inference · **Verification Status:** Manual Verification Required · **Confidence:** High
+**Evidence History:** Static Inference — `services/records/finalize.ts` writes no `audit_log` row on finalize; no approver field persisted, 2026-06-08 15:50 — "needs staging confirmation"
+**Risk if Unfixed:** Irreversible, compliance-sensitive action with no traceability — fails audit and accountability requirements. **Implementation Effort:** Medium · **Recommended Timing:** Blocker
+**Impact:** No provenance for an irreversible regulated action. **Recommendation:** Require explicit approver + immutable audit-trail entry before finalize; block finalize until both are recorded.
+**Manual Verification Steps:** In a staging record, finalize and confirm an `audit_log` row with approver identity and timestamp is created. (Under High-Risk/Regulated this is a blocker even though probability per-action is low.)
+
+### Example 14 — Visual blocker logged because a modal is hidden
+
+**Issue:** The "Confirm deletion" modal renders **behind** the sticky page header (lower z-index); its confirm button is covered and cannot be clicked, so deletion can neither be confirmed nor cancelled — the user is trapped.
+**Severity:** Critical · **Audit Profile:** Production
+**Initial Evidence Level:** Runtime Observed · **Current Verification Level:** Runtime Observed · **Verification Status:** Verified · **Confidence:** High
+**Evidence History:** Runtime Observed — `/files`, click Delete; modal `z-index: 10` < header `z-index: 50` covers the confirm button; screenshot attached, 2026-06-08 16:10
+**Risk if Unfixed:** Core destructive flow is unusable and the user is stuck behind an un-dismissable overlay. **Implementation Effort:** Low · **Recommended Timing:** Blocker
+**Impact:** Task completion is blocked. **Recommendation:** Raise modal/overlay stacking above the header and trap focus in the dialog. **This is logged as an Interaction-Observable Visual Blocker — a visual condition that materially blocks interaction — not as a styling note.**
+
+### Example 15 — Visual polish ignored because it has no workflow impact
+
+**Observation:** The modal's title uses a slightly heavier font weight than the page headings, and its corners are a touch more rounded than the cards behind it.
+**Verdict:** **Do not log.** This is pure visual polish: the modal is fully visible and operable, every control is reachable and unambiguous, and nothing about task completion, comprehension, accessibility, data integrity, or workflow safety is affected. Logging it would drift the audit toward subjective visual-design critique, which is out of scope.
+
+---
+
 ## 1. SaaS Dashboard
 
 *Support-analytics dashboard, web + tablet, roles: agent and manager.*
@@ -199,6 +277,166 @@ observation). The later sets show full findings across five product types.
 **Severity:** High
 **Impact:** The team can't see where users abandon onboarding and can't prioritize fixes — flying blind on the most important funnel.
 **Recommendation:** Instrument exposure, step-complete, and overall-complete events to reconstruct the funnel. (Checklist 16 Analytics)
+
+---
+
+## 6. Mode D — Targeted Runtime-Assisted Flow Audit (example report)
+
+*Target flow: checkout. Production profile. Dev server + existing Playwright suite available.*
+
+```md
+# Targeted Runtime-Assisted Flow Audit
+
+## Target Flow
+Checkout (cart → address → payment → confirmation)
+
+## Audit Profile
+Production
+
+## Environment Capabilities
+| Capability | Status |
+|---|---|
+| Repository Access | Available |
+| Terminal Execution | Available |
+| Dev Server | Available |
+| Browser Preview | Available |
+| Playwright | Available |
+| Cypress | Unavailable |
+| Existing E2E Suite | Available (checkout.spec.ts) |
+| Manual Verification | Optional |
+
+## Flow Map
+Entry Point: /cart → CheckoutWizard
+Routes: /checkout/address, /checkout/payment, /checkout/confirm
+Components: CheckoutWizard, AddressForm, PaymentForm, PlaceOrderButton
+State Stores: cartStore, checkoutStore
+API Calls: POST /orders, POST /payments
+Failure Paths: payment decline, network timeout on POST /orders
+Recovery Paths: retry payment, resume wizard after refresh
+
+## Findings
+
+### BUG-101 — Double-click on Place Order creates duplicate orders
+Severity: Critical
+Audit Profile: Production
+Initial Evidence Level: Static Inference
+Current Verification Level: Runtime Observed
+Verification Status: Verified
+Confidence: High
+Evidence History:
+  - Type: Static Inference  Source: PlaceOrderButton.tsx (stays enabled during request)  Timestamp: 2026-06-08 10:20  Notes: suspected double-submit
+  - Type: Runtime Observed  Source: dev server /checkout/confirm; Network shows two POST /orders (201) from one rage-click  Timestamp: 2026-06-08 11:05  Notes: reproduced
+Risk if Unfixed: Duplicate charges and fulfillment
+Implementation Effort: Low
+Recommended Timing: Blocker
+
+Issue: PlaceOrderButton stays enabled during the request.
+Impact: Real users are double-charged on slow networks.
+Recommendation: Disable on submit + server-side idempotency key.
+Manual Verification Steps: n/a (runtime-verified).
+
+### BUG-102 — Payment timeout shows no retry
+Severity: High
+Audit Profile: Production
+Initial Evidence Level: Static Inference
+Current Verification Level: Static Inference
+Verification Status: Runtime Verification Recommended
+Confidence: Medium
+Evidence History:
+  - Type: Static Inference  Source: PaymentForm.tsx — catch block swallows timeout, no retry surfaced  Timestamp: 2026-06-08 11:20  Notes: not yet reproduced at runtime
+Risk if Unfixed: Users stranded after a timeout, may re-pay elsewhere
+Implementation Effort: Medium
+Recommended Timing: Current Sprint
+
+Issue: A timed-out payment appears to leave the form in a dead state.
+Impact: If confirmed, the user cannot retry in place.
+Recommendation: Surface a retryable error preserving entered data.
+Manual Verification Steps: Force POST /payments to time out; confirm whether a retry affordance appears.
+
+## Tested Scenarios
+- [x] Loading
+- [x] Success
+- [x] Duplicate click
+- [ ] Timeout — Runtime Verification Recommended
+- [ ] Permission denied — Manual Verification Required
+
+## Summary
+Verified Findings: 1 (BUG-101)
+Static Inferences: 1 (BUG-102)
+Runtime Verification Recommended: 1 (BUG-102 timeout)
+Manual Verification Required: 1 (permission-denied scenario)
+```
+
+Mode D stops here unless explicitly asked to enter Mode B.
+
+---
+
+## 7. Mode E — Scoped Static Flow Audit (example report)
+
+*Target flow: AI memory reset, in a large monorepo. No runtime access. Production profile.*
+
+```md
+# Scoped Static Flow Audit
+
+## Target Flow
+AI memory reset ("Clear context" in the assistant)
+
+## Audit Profile
+Production
+
+## Flow Map
+Flow Entry: AssistantPanel → ClearContextButton
+Relevant Routes: /assistant
+Components: AssistantPanel, ClearContextButton, ContextChips
+State Stores: conversationStore (messages, contextRefs), memoryStore
+API Calls: DELETE /sessions/:id/context
+Permission Rules: any signed-in user may reset own context
+Failure Paths: DELETE fails; partial clear (messages cleared, contextRefs retained)
+Recovery Paths: none found in scope
+Related Existing Bugs: BUG-044 (stale context) — Closed
+Related Approved Decisions: DECISION-007 (context must be user-resettable) — Approved
+
+## Findings
+
+### BUG-201 — Reset clears messages but not pinned context refs
+Severity: High
+Audit Profile: Production
+Initial Evidence Level: Static Inference
+Current Verification Level: Static Inference
+Verification Status: Runtime Verification Recommended
+Confidence: Medium
+Evidence History:
+  - Type: Static Inference  Source: conversationStore.ts resetContext() clears `messages` but not `contextRefs`  Timestamp: 2026-06-08 12:40  Notes: no runtime access in Mode E
+Risk if Unfixed: Stale pinned context silently influences later answers after a "reset"
+Implementation Effort: Low
+Recommended Timing: Current Sprint
+
+Issue: resetContext() appears to leave contextRefs populated.
+Impact: If confirmed, "Clear context" does not fully clear context — contradicts DECISION-007.
+Recommendation: Clear contextRefs (and confirm DELETE success) within resetContext().
+Manual Verification Steps: Pin a doc, Clear context, ask a question referencing it; confirm it is no longer used.
+
+## Inspected Files
+- src/assistant/AssistantPanel.tsx
+- src/state/conversationStore.ts
+- src/state/memoryStore.ts
+
+## Uninspected Areas
+- Server-side DELETE /sessions/:id/context handler (out of scoped flow)
+- Other entry points that may mutate conversationStore
+
+## Known Limitations
+- No runtime access: dynamic store behavior not observed.
+- Cross-page consistency NOT claimed — only the assistant flow's files were inspected.
+
+## Static Inferences
+- BUG-201 (contextRefs not cleared)
+
+## Runtime Verification Recommended
+- BUG-201 — reproduce reset behavior in a running session.
+```
+
+Mode E stops here unless explicitly asked to enter Mode B.
 
 ---
 

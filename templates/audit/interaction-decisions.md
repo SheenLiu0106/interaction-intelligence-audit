@@ -11,6 +11,7 @@
 
 Date: <YYYY-MM-DD>
 Related Bug: BUG-<NNN>
+Audit Profile: <MVP | Production | High-Risk / Regulated>
 Status: Pending Human Review
 
 ### Problem

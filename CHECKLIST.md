@@ -445,7 +445,76 @@ You can't improve what you can't measure — verify the flow is instrumented.
 
 ---
 
+# Cross-Cutting Audit Practices (apply to every finding)
+
+These are not new framework sections and they do **not** renumber or replace `01`–`23`. They
+apply across all sections and modes.
+
+## Interaction-Observable Visual Blockers
+
+A **narrow** classification for visual conditions that materially **block or distort interaction
+behavior**. This is the *only* visual category in scope — it is not a doorway to visual-design
+critique.
+
+**Log these (they create functional / accessibility / workflow-safety impact):**
+
+- modal hidden behind another layer
+- CTA clipped outside the viewport
+- sticky header blocking a required control
+- mobile layout preventing task completion
+- disabled state visually indistinguishable from enabled state when it creates action risk
+- destructive and non-destructive actions visually indistinguishable when it creates deletion risk
+- toast or error feedback hidden from view
+- focus indicator missing when it prevents keyboard navigation
+- overlay preventing interaction
+- layout shift causing wrong-action clicks
+
+**Do not log these (no material impact — out of scope):**
+
+- typography preference
+- color-palette taste
+- decorative spacing polish
+- illustration style
+- visual-trend alignment
+- subjective brand styling
+
+```text
+Before logging a visual observation, determine whether it creates a measurable
+functional, accessibility, comprehension, data-integrity, or workflow-safety impact.
+
+If no material impact exists, do not log it as a bug.
+```
+
+## Evidence quality
+
+- **State your evidence.** Every finding records its **Evidence Level** (`Static Inference` |
+  `Runtime Observed` | `Test Verified` | `Human Verified`), **Confidence** (`High` | `Medium` |
+  `Low`), **Verification Status** (`Verified` | `Runtime Verification Recommended` |
+  `Manual Verification Required` | `Not Yet Verified`), and **Evidence Source** (file/route/
+  component/state store/API endpoint/test/observation/screenshot/note).
+- **Don't overstate.** Never present a `Static Inference` as a confirmed runtime fact; use cautious
+  language (*"may," "appears to," "could," "requires runtime verification"*).
+
+## Runtime verification needs
+
+- **Static inspection is the floor, not the ceiling.** Where the issue depends on runtime behavior
+  (timing, async, race conditions, network failure, optimistic rollback, session/refresh recovery,
+  AI context loss), prefer the strongest available evidence — run tests, start the dev server,
+  exercise the flow (see **Mode D** in [`WORKFLOW.md`](WORKFLOW.md)).
+- **Flag what you couldn't run.** When runtime tooling is unavailable, mark the finding
+  `Runtime Verification Recommended` or `Manual Verification Required` and give exact reviewer
+  steps — never silently assume the runtime behavior.
+
+## Profile-sensitive prioritization
+
+- **Score against the Audit Profile** (`MVP` | `Production` | `High-Risk / Regulated`). The same
+  observation can be a Blocker under High-Risk/Regulated and a deferrable Backlog item under MVP.
+- **Don't over-engineer.** Do not recommend complex remediation solely because an edge case is
+  theoretically possible. Prioritize by probability, user impact, product stage, data-integrity
+  risk, and recovery difficulty. Record **Risk if Unfixed**, **Implementation Effort**, and
+  **Recommended Timing** on each finding.
+
+---
+
 When the walk is complete, produce the report using [OUTPUT_TEMPLATE.md](OUTPUT_TEMPLATE.md),
 leading with the highest-risk behavioral findings. Calibrate against [EXAMPLES.md](EXAMPLES.md).
-</content>
-</invoke>

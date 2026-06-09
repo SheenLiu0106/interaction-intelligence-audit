@@ -29,13 +29,40 @@ Last Updated: <YYYY-MM-DD HH:mm>
 ## BUG-001 — <short descriptive title>
 
 Status: Open
+Type: <Bug | Regression>
+Related Bug: <BUG-NNN if Type: Regression or Duplicate; else "—">
 Severity: <Critical | High | Medium | Low>
+Audit Profile: <MVP | Production | High-Risk / Regulated>
 Category: <e.g. Interaction Feedback | Accessibility | Design Consistency | Error Handling>
 Location: <page / component / file>
 Detected: <YYYY-MM-DD HH:mm>
 Last Updated: <YYYY-MM-DD HH:mm>
 Reviewer: Pending
 Related Files: <paths, or "Pending investigation">
+
+### Evidence Classification
+
+<!-- Evidence is append-only and multi-stage; types may coexist. Do not overwrite — append to
+     Evidence History. Evidence Level = where evidence came from; Verification Status = whether it
+     is sufficient to confirm the issue/fix. -->
+
+Initial Evidence Level: <Static Inference | Runtime Observed | Test Verified | Human Verified>
+Current Verification Level: <strongest evidence reached; may combine, e.g. "Runtime Observed + Test Verified">
+Verification Status: <Verified | Runtime Verification Recommended | Manual Verification Required | Not Yet Verified>
+Confidence: <High | Medium | Low>
+
+#### Evidence History (append-only)
+
+- Type: <Static Inference | Runtime Observed | Test Verified | Human Verified>
+  Source: <file path | route | component | state store | API endpoint | test name | runtime observation | screenshot | manual-review note>
+  Timestamp: <YYYY-MM-DD HH:mm>
+  Notes: <what this evidence confirmed or changed>
+
+### Prioritization
+
+Risk if Unfixed: <consequence if shipped as-is>
+Implementation Effort: <Low | Medium | High>
+Recommended Timing: <Blocker | Current Sprint | Backlog | Defer>
 
 ### Issue
 
@@ -89,10 +116,13 @@ Related Files: <paths, or "Pending investigation">
 
 #### <YYYY-MM-DD HH:mm> — Fix Implemented
 - Status changed to `Fixed — Awaiting Human Review`.
-- Modified files: <paths>
+- Files Modified: <paths — only the files necessary for this issue>
 - Summary: <what changed>
-- Verification: <checks actually performed>
-- Regression checks: <what was confirmed>
+- Validation Performed: <checks actually run: tests / typecheck / lint / build / runtime>
+- Validation Not Available: <checks that could not be run in this environment>
+- Manual Verification Steps: <exact steps for the reviewer>
+- Regression Risks: <related flows that could be affected>
+- Evidence History: append a new entry (Type / Source / Timestamp / Notes) for the post-fix verification; update Current Verification Level and Verification Status accordingly.
 - Human review required.
 
 #### <YYYY-MM-DD HH:mm> — Human Review
