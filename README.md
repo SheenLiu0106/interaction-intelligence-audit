@@ -40,6 +40,37 @@ The framework is **logic-first**, organized as seven primary domains (Tier 1), w
 
 ---
 
+## Theoretical grounding: See → Understand → Operate
+
+The framework is anchored to a classic HCI cognitive chain — a user must first **see** what is actionable, then **understand** what will happen, then be able to **operate** without error. Each stage maps to established design theory, and the skill's audit domains hang off that spine:
+
+- **See — Affordance / Signifier:** *"What can I do here?"* — discoverability of key actions, clear interactive affordances, disabled/loading states that explain themselves.
+- **Understand — Mental Model:** *"What will happen if I do it?"* — navigation predictability, labels matching how users think, equivalent actions behaving consistently, and (for AI products) whether output is generated/retrieved/verified.
+- **Operate — Jakob · Fitts · Hick · Miller:** *"Can I complete it without error?"* — familiar patterns, no unnecessary steps, perceptible feedback, dead-end-free flows, and recoverable failures within users' cognitive and motor limits.
+
+The skill is **grounded in this foundation but deliberately extends past it** — into data integrity, destructive-action safety, regression/release readiness, and AI-native failure logic, which the classic laws don't cover. Conversely, it does **not** treat Fitts/Hick as visual-polish checks; it reports them only where they create a behavioral failure (see the next section).
+
+```mermaid
+flowchart TB
+    subgraph SPINE["HCI cognitive spine - grounds every check"]
+        S["SEE<br/>Affordance / Signifier<br/>What can I do here?"]
+        U["UNDERSTAND<br/>Mental Model<br/>What will happen?"]
+        O["OPERATE<br/>Jakob, Fitts, Hick, Miller<br/>Can I do it without error?"]
+        S --> U --> O
+    end
+
+    S -.-> SA["Discoverability and visible actions<br/>clear affordances, self-explaining disabled states"]
+    U -.-> UA["D1 User-Flow Integrity<br/>D4 Cross-Component Consistency<br/>D6 AI transparency and provenance"]
+    O -.-> OA["D2 Product-State Logic<br/>D3 Action Safety<br/>no dead ends, feedback, recovery"]
+
+    subgraph BEYOND["Where the skill extends past the classic foundation"]
+        EX["Data integrity and race conditions, destructive-action safety and undo<br/>Regression and release readiness, AI-native failure and override logic"]
+    end
+    O ==> BEYOND
+```
+
+---
+
 ## What This Skill Does Not Audit
 
 This skill is **not** a visual-design review tool. It does **not** evaluate:
