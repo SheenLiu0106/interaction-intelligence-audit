@@ -71,6 +71,13 @@ setup.
   automation, installs no new dependencies without explicit approval, and **stops after producing
   its targeted report** unless asked to enter Mode B. Full procedure: [`WORKFLOW.md`](WORKFLOW.md);
   report scaffold: [`templates/audit/targeted-runtime-flow-report.md`](templates/audit/targeted-runtime-flow-report.md).
+  *Optional Playwright / runtime enhancement:* if a Playwright install (or a configured Playwright
+  MCP / browser agent), an existing E2E suite, or a runnable dev server is present, Mode D
+  **detects and uses it automatically** to raise findings toward `Runtime Observed` / `Test
+  Verified`. This is **opt-in capability detection, not a required pairing** — with no runtime
+  tooling Mode D degrades to static inference flagged `Runtime Verification Recommended`. Enable
+  browser validation where wanted with `npx playwright install`; the skill never installs it on
+  its own without explicit approval.
 - **Mode E — Scoped Static Flow Audit** *(optional).* Statically analyze **one explicitly named
   flow** in a large repository without runtime access — map its entry point, routes, components,
   state stores, API calls, permissions, and failure/recovery paths, then inspect **only** the

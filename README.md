@@ -169,6 +169,8 @@ Pick a profile at intake — **MVP**, **Production**, or **High-Risk / Regulated
 
 It ships **no** built-in browser runner, E2E framework, or usability harness, and **complements rather than replaces** runtime E2E testing, accessibility validation, visual QA, and human usability review. Procedures and report schemas: [WORKFLOW.md](WORKFLOW.md).
 
+**Optional Playwright / runtime enhancement.** Mode D is the only mode that benefits from browser automation. If a Playwright install (or a configured Playwright MCP / browser agent), an existing E2E suite, or a runnable dev server is present in the environment, Mode D **detects and uses it automatically** to upgrade findings toward `Runtime Observed` / `Test Verified`. None of this is a dependency: it is **opt-in capability detection**, not a required pairing. With no runtime tooling, Mode D degrades gracefully to static inference flagged `Runtime Verification Recommended`. To enable browser validation where it is wanted: `npx playwright install` — the skill installs no new dependencies on its own without explicit approval.
+
 ---
 
 ## Contributing

@@ -98,6 +98,15 @@ approves.** When a capability is unavailable, mark affected findings `Runtime Ve
 Recommended` or `Manual Verification Required` with exact reviewer steps — never fail silently and
 never assume the runtime behavior.
 
+**Playwright / browser automation is opt-in, not a required pairing.** The browser-automation row
+above is satisfied by *whatever the environment already provides* — a Playwright install, a
+configured Playwright MCP / browser agent, an existing Cypress or E2E suite, or a runnable dev
+server. When such tooling is present, use it to raise findings toward `Runtime Observed` / `Test
+Verified`; when it is absent, degrade to static inference flagged `Runtime Verification
+Recommended`. Installers are **not** required to set up Playwright alongside this skill. Where
+browser validation is wanted and approved, enable it with `npx playwright install` — the skill
+never installs it on its own.
+
 ## Audit profiles (severity & timing)
 
 Each run selects an **Audit Profile** (`MVP` | `Production` | `High-Risk / Regulated`) that tunes
