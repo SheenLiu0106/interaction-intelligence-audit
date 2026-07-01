@@ -5,7 +5,7 @@ Interaction Intelligence Audit skill was (temporarily) pointed at its own repo. 
 preserved here for history — they are **not** part of the skill's runtime contract and are
 **not** templates.
 
-When the skill runs against a real target product, its runtime records (`bug.md`,
+When the skill runs against a real target product, its runtime records (`AUDIT_BUGS.md`,
 `changelog.md`, decision logs) are created **inside that target repository**, never here. See
 [`WORKFLOW.md`](../../WORKFLOW.md) and the reusable scaffolds in [`templates/`](../../templates/).
 
@@ -21,7 +21,7 @@ When the skill runs against a real target product, its runtime records (`bug.md`
 
 ## Contents
 
-- `bug.md` — BUG-001 … BUG-005 from the self-audit. BUG-001 is **Approved / Closed** (its fix is
+- `AUDIT_BUGS.md` — BUG-001 … BUG-005 from the self-audit. BUG-001 is **Approved / Closed** (its fix is
   the Category Scores change in `OUTPUT_TEMPLATE.md`, approved 2026-06-05); BUG-002 … BUG-005
   remain `Open` (not yet addressed).
 - `changelog.md` — implementation + approval history for the BUG-001 fix.

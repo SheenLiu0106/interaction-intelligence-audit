@@ -42,7 +42,7 @@ how a product behaves, not how it looks.
 Evidence is **append-only and multi-stage**. A finding can progress
 `Static Inference → Runtime Observed → Test Verified → Human Verified`, and more than one type may
 coexist. Do **not** overwrite a single evidence value — keep the history. Every finding (in
-`bug.md`, a Mode A report, a Mode D runtime report, or a Mode E scoped report) records:
+`AUDIT_BUGS.md`, a Mode A report, a Mode D runtime report, or a Mode E scoped report) records:
 
 ```text
 Initial Evidence Level:     Static Inference | Runtime Observed | Test Verified | Human Verified
@@ -132,13 +132,13 @@ Recommended target-repo policy:
 
 ```text
 Tracked target-repository records:
-- bug.md
+- AUDIT_BUGS.md
 - changelog.md
-- docs/audit/interaction-decisions.md
-- docs/audit/reports/*.md            (Mode A / Mode D / Mode E reports)
+- docs/interaction-audit/interaction-decisions.md
+- docs/interaction-audit/reports/*.md            (Mode A / Mode D / Mode E reports)
 
 Optional transient runtime artifacts (the target project may .gitignore these):
-- docs/audit/runtime-artifacts/
+- docs/interaction-audit/runtime-artifacts/
 - screenshots/
 - traces/
 - videos/
@@ -148,7 +148,7 @@ Scaffold the tracked records by copying from this skill's [`templates/`](templat
 filling in the placeholders. The optional regression checklist
 ([`templates/audit/regression-checklist.md`](templates/audit/regression-checklist.md)) and the
 Mode D / Mode E report scaffolds also live under `templates/audit/`. If these paths conflict with
-the target repo's conventions, nest them under a dedicated folder and say so in `bug.md`. Transient
+the target repo's conventions, nest them under a dedicated folder and say so in `AUDIT_BUGS.md`. Transient
 artifacts (screenshots, traces, videos, scratch runtime output) may be ignored by the target
 project if it chooses; the durable records above should be tracked.
 
@@ -163,7 +163,7 @@ Preflight:
 - Resolve the skill repository path.
 - Resolve the target product repository path.
 - Confirm the paths are different.
-- Check whether the target already contains bug.md, changelog.md, or docs/audit/.
+- Check whether the target already contains AUDIT_BUGS.md, changelog.md, or docs/interaction-audit/.
 - Preserve and update existing records rather than overwriting them.
 - Copy blank templates only when the corresponding target files do not already exist.
 ```
@@ -220,11 +220,11 @@ approval. Never start the next fix before the current one is reviewed.**
 1. **Inspect the environment.** Identify the target repo's structure, entry points, routes,
    components, state, styles, and the available validation commands. Record which capabilities
    are unavailable.
-2. **Read existing records.** Read the target repo's `bug.md` / `changelog.md` / decision log if
+2. **Read existing records.** Read the target repo's `AUDIT_BUGS.md` / `changelog.md` / decision log if
    they exist. Preserve and update them; do not overwrite. Do not duplicate existing issues; do
    not revert approved decisions.
-3. **Audit** using [`CHECKLIST.md`](CHECKLIST.md). Record every finding in the target's `bug.md`
-   (copy [`templates/bug.md`](templates/bug.md) if absent). Assign ID, title, severity,
+3. **Audit** using [`CHECKLIST.md`](CHECKLIST.md). Record every finding in the target's `AUDIT_BUGS.md`
+   (copy [`templates/AUDIT_BUGS.md`](templates/AUDIT_BUGS.md) if absent). Assign ID, title, severity,
    category, location, impact, evidence, reproduction, expected behavior, recommended fix,
    acceptance criteria.
 4. **Prioritize** by risk (Critical core-flow/data-loss/accessibility blockers first). Select
@@ -237,7 +237,7 @@ approval. Never start the next fix before the current one is reviewed.**
    strongest available validation; inspect the diff. Mark unrunnable checks
    `Manual Verification Required`.
 7. **Record.** Set the issue `Fixed — Awaiting Human Review`. Append (never overwrite) history in
-   `bug.md`; add a record to `changelog.md`; add a decision entry if the fix involved a real
+   `AUDIT_BUGS.md`; add a record to `changelog.md`; add a decision entry if the fix involved a real
    design choice.
 8. **Stop and request human review.** Present what changed, files modified, validation performed,
    manual checks required, and how to review. Wait.
@@ -298,7 +298,7 @@ Post-Fix Validation:
 - provide exact manual-review steps
 ```
 
-**Remediation record fields** (append to the issue's `bug.md` history and the `changelog.md`
+**Remediation record fields** (append to the issue's `AUDIT_BUGS.md` history and the `changelog.md`
 entry, in addition to the evidence-classification fields):
 
 ```text
@@ -339,9 +339,9 @@ rule, status lifecycle, append-only history, and the human-review gate. Its chec
 
 0. **Preflight (mandatory).** Resolve the skill and target repository paths, confirm they differ,
    and stop to ask the user if the target is unknown — exactly as in Mode B.
-1. **Read existing `bug.md`** in the target repo.
+1. **Read existing `AUDIT_BUGS.md`** in the target repo.
 2. **Read existing `changelog.md`** in the target repo.
-3. **Read existing interaction decisions** (e.g. `docs/audit/interaction-decisions.md`).
+3. **Read existing interaction decisions** (e.g. `docs/interaction-audit/interaction-decisions.md`).
 4. **Identify previously closed issues** (`Closed` / `Approved`) and the approved interaction
    decisions.
 5. **Re-check the affected workflows** — the flows, states, and components those issues and
@@ -354,7 +354,7 @@ rule, status lifecycle, append-only history, and the human-review gate. Its chec
    - **approved decisions that are no longer respected.**
 7. **Avoid broad re-auditing** unless explicitly requested.
 8. **Preserve historical records** — append only; never rewrite or delete a closed entry.
-9. **Log regressions as new `bug.md` entries** that reference the original bug ID. Use the
+9. **Log regressions as new `AUDIT_BUGS.md` entries** that reference the original bug ID. Use the
    classification:
 
    ```text
@@ -486,7 +486,7 @@ Mode B.
 
 ## History-preservation rules
 
-- Append-only. Never delete or rewrite a previous `bug.md` entry, `changelog.md` record, or
+- Append-only. Never delete or rewrite a previous `AUDIT_BUGS.md` entry, `changelog.md` record, or
   decision.
 - Preserve the original issue description after resolution.
 - For a returned issue, create a new entry typed `Regression` that references the original; never

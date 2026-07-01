@@ -51,11 +51,11 @@ setup.
   Nothing is written to the target unless asked. Format: [`OUTPUT_TEMPLATE.md`](OUTPUT_TEMPLATE.md).
   This is the default, and the rest of this file describes it.
 - **Mode B — Persistent Remediation.** Audit *and* fix issues **one at a time, under human
-  review**, keeping an append-only history (`bug.md` / `changelog.md` / decision log) **inside the
+  review**, keeping an append-only history (`AUDIT_BUGS.md` / `changelog.md` / decision log) **inside the
   target repository**. Fix one → stop → await explicit human review → continue. Full lifecycle:
   [`WORKFLOW.md`](WORKFLOW.md). Reusable scaffolds: [`templates/`](templates/).
 - **Mode C — Regression Re-Audit.** Compare *current* product behavior against the target repo's
-  **historical records** (`bug.md`, `changelog.md`, interaction decisions). Re-check the
+  **historical records** (`AUDIT_BUGS.md`, `changelog.md`, interaction decisions). Re-check the
   workflows affected by previously closed issues and report reopened issues, new regressions,
   still-open issues, verified-closed issues, and approved decisions that are no longer respected.
   Regressions are logged as **new** bug entries typed `Type: Regression` with
@@ -289,4 +289,4 @@ Produce the report exactly in the format defined by [OUTPUT_TEMPLATE.md](OUTPUT_
 - [EXAMPLES.md](EXAMPLES.md) — worked, logic-first example findings (including visual-observation judgment calls)
 - [PROMPT.md](PROMPT.md) — the default invocation prompts (Modes A–E) and audit personas
 - [WORKFLOW.md](WORKFLOW.md) — Mode B remediation, Mode C regression re-audit, Mode D runtime-assisted, and Mode E scoped-static lifecycles (statuses, change-control, one-fix-at-a-time, human-review gate, runtime-capability detection, evidence classification)
-- [templates/](templates/) — reusable scaffolds copied into the target repo: `bug.md`, `changelog.md`, `audit/interaction-decisions.md`, `audit/regression-checklist.md`, `audit/targeted-runtime-flow-report.md` (Mode D), `audit/scoped-static-flow-report.md` (Mode E)
+- [templates/](templates/) — reusable scaffolds copied into the target repo: `AUDIT_BUGS.md`, `changelog.md`, `audit/interaction-decisions.md`, `audit/regression-checklist.md`, `audit/targeted-runtime-flow-report.md` (Mode D), `audit/scoped-static-flow-report.md` (Mode E)

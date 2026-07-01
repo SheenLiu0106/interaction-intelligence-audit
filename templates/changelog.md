@@ -1,6 +1,6 @@
 <!--
   TEMPLATE — copy this file into the TARGET product repository as `changelog.md` alongside
-  `bug.md`, then append one record per fix. Append-only; never delete prior records.
+  `AUDIT_BUGS.md`, then append one record per fix. Append-only; never delete prior records.
   See ../WORKFLOW.md. Replace every <placeholder>.
 -->
 

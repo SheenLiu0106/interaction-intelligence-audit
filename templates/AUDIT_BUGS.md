@@ -1,6 +1,6 @@
 <!--
-  TEMPLATE — copy this file into the ROOT of the TARGET product repository as `bug.md`
-  (or into the target's `docs/audit/`), then fill it in. Do not edit this template in place
+  TEMPLATE — copy this file into the ROOT of the TARGET product repository as `AUDIT_BUGS.md`
+  (or into the target's `docs/interaction-audit/`), then fill it in. Do not edit this template in place
   while auditing; it ships blank with the skill. See ../WORKFLOW.md for the lifecycle rules.
   Replace every <placeholder>. Use 24-hour timestamps. Never delete history — append only.
 -->

@@ -1,6 +1,6 @@
 <!--
   TEMPLATE (Mode D) — copy into the TARGET product repository (e.g. as
-  `docs/audit/reports/targeted-runtime-flow-report.md`) and fill it in for ONE named flow. Ships
+  `docs/interaction-audit/reports/targeted-runtime-flow-report.md`) and fill it in for ONE named flow. Ships
   blank with the skill; do not fill it in here. See ../../WORKFLOW.md (Mode D). Replace every
   <placeholder>. Evidence is append-only and multi-stage. Do not claim a scenario was tested unless
   it was actually executed. Do not install new dependencies unless the user explicitly approves.

@@ -1,5 +1,5 @@
 <!--
-  TEMPLATE — copy into the TARGET product repository (e.g. as `docs/audit/interaction-decisions.md`)
+  TEMPLATE — copy into the TARGET product repository (e.g. as `docs/interaction-audit/interaction-decisions.md`)
   when a fix involves a non-trivial interaction-design decision: multiple reasonable options, a
   global pattern change, a new reusable component/convention, or a reviewer product-level call.
   See ../../WORKFLOW.md. Replace every <placeholder>.

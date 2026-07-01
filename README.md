@@ -11,7 +11,7 @@ It runs on any repository-capable coding agent ([Claude Code](https://claude.com
 ## Modes
 
 - **A — One-shot Audit** *(default)*: walk the framework, return one severity-ordered report ([OUTPUT_TEMPLATE.md](OUTPUT_TEMPLATE.md)). Nothing is written unless you ask.
-- **B — Persistent Remediation**: audit *and* fix issues **one at a time under human review**, with an append-only history (`bug.md` / `changelog.md` / decision log) **inside the target repo**. Fix one → stop → await review → continue.
+- **B — Persistent Remediation**: audit *and* fix issues **one at a time under human review**, with an append-only history (`AUDIT_BUGS.md` / `changelog.md` / decision log) **inside the target repo**. Fix one → stop → await review → continue.
 - **C — Regression Re-Audit**: compare current behavior against the repo's historical records; report reopened issues, new regressions, still-open / verified-closed issues, and violated decisions. Logs regressions as new entries.
 - **D — Targeted Runtime-Assisted Flow Audit**: validate **one named flow** using the strongest available runtime evidence (dev server, E2E suite, browser, screenshots), falling back to flagged static inference.
 - **E — Scoped Static Flow Audit**: statically analyze **one named flow** in a large repo without runtime access, inspecting only relevant files to cut context overload and false positives.
@@ -123,7 +123,7 @@ Produce an evidence-based report ranked by severity, per OUTPUT_TEMPLATE.md.
 
 ```text
 Run the Interaction Intelligence Audit in Persistent Remediation mode (WORKFLOW.md).
-Confirm the target repo (not the skill repo), scaffold bug.md / changelog.md from
+Confirm the target repo (not the skill repo), scaffold AUDIT_BUGS.md / changelog.md from
 templates/, record findings, fix only the highest-priority issue, stop, and wait for review.
 ```
 
@@ -134,7 +134,7 @@ See [PROMPT.md](PROMPT.md) for full fill-in templates (including Mode C) and aud
 ## Output Format
 
 - **Mode A** — one structured report ([OUTPUT_TEMPLATE.md](OUTPUT_TEMPLATE.md)), findings grouped by severity (Critical → High → Medium → Low). Each finding names a concrete state/flow/component/screen and follows Issue / Severity / Impact / Recommendation. Also includes an Executive Summary (top risks + optional risk score), category-level risk indicators, and a Recommended Next Sprint (Priority 1/2/3).
-- **Mode B** — persistent remediation records inside the target repo (`bug.md`, `changelog.md`, decision history).
+- **Mode B** — persistent remediation records inside the target repo (`AUDIT_BUGS.md`, `changelog.md`, decision history).
 - **Mode C** — a regression report; new regressions logged as entries referencing the original issue IDs.
 
 Worked examples (logic-first and per-product-type): [EXAMPLES.md](EXAMPLES.md).

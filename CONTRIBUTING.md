@@ -14,7 +14,7 @@ Worked examples live in [EXAMPLES.md](EXAMPLES.md). Good findings are specific, 
 If the framework is missing a category or check, open an issue describing the gap: what failure mode is uncovered, which product types it affects, and a proposed check or category.
 
 ### Improve the remediation workflow or templates
-The Mode B (persistent remediation) and Mode C (regression re-audit) lifecycles live in [WORKFLOW.md](WORKFLOW.md) and the reusable scaffolds in [templates/](templates/). Keep both **agent-agnostic** — generic repository operations only, no vendor-specific tool, command, or feature. Template files ship blank (placeholders only); never commit a filled-in runtime `bug.md`/`changelog.md` into this repo.
+The Mode B (persistent remediation) and Mode C (regression re-audit) lifecycles live in [WORKFLOW.md](WORKFLOW.md) and the reusable scaffolds in [templates/](templates/). Keep both **agent-agnostic** — generic repository operations only, no vendor-specific tool, command, or feature. Template files ship blank (placeholders only); never commit a filled-in runtime `AUDIT_BUGS.md`/`changelog.md` into this repo.
 
 ## Submitting a pull request
 

@@ -99,20 +99,20 @@ Target product repository: [absolute path to the repo to audit — REQUIRED]
 Target: [what it is and what it's for]
 Scope: [whole product | specific flow/page/component]
 Validation available: [tests | typecheck | lint | build | runtime | none — describe]
-Records location: [target repo root | target docs/audit/ — default: target repo root]
+Records location: [target repo root | target docs/interaction-audit/ — default: target repo root]
 
 0. PREFLIGHT (do this before writing anything): resolve the skill repo path and the target
    product repo path, and confirm they are NOT the same directory. If the target repository
    was not given or you cannot confidently identify it, STOP and ask me for the target path —
    never assume the skill repo is the target.
-1. Inspect the repo and read any existing bug.md / changelog.md / decision log first;
+1. Inspect the repo and read any existing AUDIT_BUGS.md / changelog.md / decision log first;
    preserve and update existing records rather than overwriting them.
 2. Only if a given file is absent, scaffold it in the TARGET repo by copying from the skill's
    templates/ (copy blank templates only when the corresponding target file does not exist).
-3. Walk CHECKLIST.md, record every finding in bug.md (severity-ranked), and produce an audit summary.
+3. Walk CHECKLIST.md, record every finding in AUDIT_BUGS.md (severity-ranked), and produce an audit summary.
 4. Fix ONLY the single highest-priority issue. Make the smallest effective change; no unrelated edits.
 5. Verify with the strongest available validation; mark unrunnable checks "Manual Verification Required".
-6. Update bug.md (append-only history) and changelog.md; add a decision entry if a real design choice was made.
+6. Update AUDIT_BUGS.md (append-only history) and changelog.md; add a decision entry if a real design choice was made.
 7. Set the issue to "Fixed — Awaiting Human Review", request review, and STOP.
 
 Do not fix a second issue until I respond with: Approve / Reject / Revise / Defer.
@@ -149,7 +149,7 @@ Scope: [previously closed issues only (default) | also named flows: ...]
 0. PREFLIGHT (before writing anything): resolve the skill repo path and the target product repo
    path and confirm they are NOT the same directory. If the target was not given or cannot be
    confidently identified, STOP and ask me — never assume the skill repo is the target.
-1. Read the target's existing bug.md, changelog.md, and interaction-decisions log.
+1. Read the target's existing AUDIT_BUGS.md, changelog.md, and interaction-decisions log.
 2. Identify previously closed/approved issues and the approved interaction decisions.
 3. Re-check the affected workflows (do NOT broadly re-audit unless I ask).
 4. Produce a Regression Report covering: reopened issues, newly discovered regressions,

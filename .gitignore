@@ -7,6 +7,6 @@
 # Guardrail: runtime audit records belong in the TARGET product repo, never here.
 # Prevent a stray in-repo audit run from polluting this reusable skill.
 # (Reusable scaffolds live under templates/ and stay tracked; docs/self-audit/ stays tracked.)
-/bug.md
+/AUDIT_BUGS.md
 /changelog.md
-/docs/audit/
+/docs/interaction-audit/

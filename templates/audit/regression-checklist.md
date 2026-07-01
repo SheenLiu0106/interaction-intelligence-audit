@@ -1,5 +1,5 @@
 <!--
-  TEMPLATE — optional. Copy into the TARGET product repository (e.g. `docs/audit/regression-checklist.md`)
+  TEMPLATE — optional. Copy into the TARGET product repository (e.g. `docs/interaction-audit/regression-checklist.md`)
   and run the relevant items per fix. Items that cannot be verified automatically must be marked
   "Manual Verification Required" with exact steps for the reviewer. See ../../WORKFLOW.md.
 -->

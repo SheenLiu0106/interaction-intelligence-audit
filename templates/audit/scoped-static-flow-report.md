@@ -1,6 +1,6 @@
 <!--
   TEMPLATE (Mode E) — copy into the TARGET product repository (e.g. as
-  `docs/audit/reports/scoped-static-flow-report.md`) and fill it in for ONE named flow. Ships blank
+  `docs/interaction-audit/reports/scoped-static-flow-report.md`) and fill it in for ONE named flow. Ships blank
   with the skill; do not fill it in here. See ../../WORKFLOW.md (Mode E). Replace every
   <placeholder>. Evidence is append-only and multi-stage. Mode E performs NO runtime validation:
   default findings to Static Inference + Runtime Verification Recommended unless existing tests
